@@ -12,7 +12,9 @@
 #include <iostream>
 #include <vector>
 using std::vector ;
+using std::pair ;
 
 void createOriginalDB(vector<vector<int>> *originalDB) ;
+void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *originalDB) ;
 void printDB(vector<vector<int>> *dataBase) ;
 #endif /* createOriginalDB_hpp */

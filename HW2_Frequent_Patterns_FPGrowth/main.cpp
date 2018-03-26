@@ -13,13 +13,17 @@
 using std::cout ;
 using std::endl ;
 using std::vector ;
+using std::pair ;
 
 int transactionCount = 0 ;
 vector<vector<int>> originalDB ;
+vector<pair<int, int>> fList ;
 
 int main(int argc, const char * argv[]) {
 	createOriginalDB(&originalDB) ;
 	transactionCount = (int)originalDB.size() ;
 	printDB(&originalDB) ;
+	getFrequentListFromDB(&fList, &originalDB) ;
+	cout << "a" ;
 }
 
