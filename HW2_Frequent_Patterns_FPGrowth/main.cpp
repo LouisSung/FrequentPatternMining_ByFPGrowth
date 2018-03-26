@@ -7,7 +7,19 @@
 //
 
 #include <iostream>
+#include <vector>
+#include "handleDataBase.hpp"
+
+using std::cout ;
+using std::endl ;
+using std::vector ;
+
+int transactionCount = 0 ;
+vector<vector<int>> originalDB ;
 
 int main(int argc, const char * argv[]) {
-	
+	createOriginalDB(&originalDB) ;
+	transactionCount = (int)originalDB.size() ;
+	printDB(&originalDB) ;
 }
+
