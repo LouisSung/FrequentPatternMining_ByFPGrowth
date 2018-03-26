@@ -16,7 +16,7 @@ using std::vector ;
 using std::pair ;
 
 int transactionCount = 0 ;
-vector<vector<int>> originalDB ;
+vector<vector<int>> originalDB, fListDB ;
 vector<pair<int, int>> fList ;
 
 int main(int argc, const char * argv[]) {
@@ -24,6 +24,12 @@ int main(int argc, const char * argv[]) {
 	transactionCount = (int)originalDB.size() ;
 	printDB(&originalDB) ;
 	getFrequentListFromDB(&fList, &originalDB) ;
+	for(auto i=fList.begin(); i!=fList.end()-1; ++i){
+		cout << i->first << ", " ;}
+	cout << (fList.end()-1)->first << endl ;
+	cout << "\n\n=\n" ;
+	createFListDBfromOriginalDB(&fListDB, &originalDB, &fList) ;
+	printDB(&fListDB) ;
 	cout << "a" ;
 }
 

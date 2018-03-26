@@ -19,6 +19,7 @@ using std::map ;
 using std::make_pair ;
 using std::pair ;
 using std::sort ;
+using std::find ;
 
 void createOriginalDB(vector<vector<int>> *originalDB){
 	freopen("sample.in", "r", stdin) ;			//重新導向
@@ -54,6 +55,19 @@ void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *o
 	auto greaterByValue = [](pair<int,int> const & a, pair<int,int> const & b){			//magic!!!!!
 		return a.second != b.second?  a.second > b.second : a.first > b.first ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
 	sort(fList->begin(), fList->end(), greaterByValue);			//依照出現次數排序
+}
+
+//==========
+void createFListDBfromOriginalDB(vector<vector<int>> *fListDB, vector<vector<int>> *originalDB, vector<pair<int, int>> *fList){
+	vector<int> sortedTransaction ;
+	for(auto i=originalDB->begin(); i!=originalDB->end(); ++i){			//取得orginalDB每筆交易
+		sortedTransaction.clear() ;
+		for(auto j=fList->begin(); j!=fList->end(); ++j){			//取得fList內容、順序
+			if(find(i->begin(), i->end(), j->first) != i->end()){			//判斷fList內的item是否在orginalDB出現
+				sortedTransaction.push_back(j->first) ;}}
+		fListDB->push_back(sortedTransaction) ;			//放回排序後內容
+//		i->swap(sortedTransaction) ;			//直接修改orginalDB
+	}
 }
 
 //==========
