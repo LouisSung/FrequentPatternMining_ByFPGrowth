@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F09D186E2068DD5400323DF0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D186D2068DD5400323DF0 /* main.cpp */; };
 		F09D18762068DE4700323DF0 /* handleDataBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D18742068DE4700323DF0 /* handleDataBase.cpp */; };
+		F09D187A206935CE00323DF0 /* handleFPtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D1878206935CE00323DF0 /* handleFPtree.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		F09D186D2068DD5400323DF0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F09D18742068DE4700323DF0 /* handleDataBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handleDataBase.cpp; sourceTree = "<group>"; };
 		F09D18752068DE4700323DF0 /* handleDataBase.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handleDataBase.hpp; sourceTree = "<group>"; };
+		F09D1878206935CE00323DF0 /* handleFPtree.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handleFPtree.cpp; sourceTree = "<group>"; };
+		F09D1879206935CE00323DF0 /* handleFPtree.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handleFPtree.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,7 @@
 			children = (
 				F09D186D2068DD5400323DF0 /* main.cpp */,
 				F09D18742068DE4700323DF0 /* handleDataBase.cpp */,
+				F09D1878206935CE00323DF0 /* handleFPtree.cpp */,
 				F09D18772068DE5700323DF0 /* header */,
 			);
 			path = HW2_Frequent_Patterns_FPGrowth;
@@ -71,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				F09D18752068DE4700323DF0 /* handleDataBase.hpp */,
+				F09D1879206935CE00323DF0 /* handleFPtree.hpp */,
 			);
 			path = header;
 			sourceTree = "<group>";
@@ -133,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F09D18762068DE4700323DF0 /* handleDataBase.cpp in Sources */,
+				F09D187A206935CE00323DF0 /* handleFPtree.cpp in Sources */,
 				F09D186E2068DD5400323DF0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

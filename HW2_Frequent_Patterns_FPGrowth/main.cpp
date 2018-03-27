@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include "handleDataBase.hpp"
+#include "handleFPtree.hpp"
 
 using std::cout ;
 using std::endl ;
@@ -23,13 +24,18 @@ int main(int argc, const char * argv[]) {
 	createOriginalDB(&originalDB) ;
 	transactionCount = (int)originalDB.size() ;
 	printDB(&originalDB) ;
+	
 	getFrequentListFromDB(&fList, &originalDB) ;
+	
+	cout << "\nflist: " ;
 	for(auto i=fList.begin(); i!=fList.end()-1; ++i){
 		cout << i->first << ", " ;}
 	cout << (fList.end()-1)->first << endl ;
 	cout << "\n\n=\n" ;
+	
 	createFListDBfromOriginalDB(&fListDB, &originalDB, &fList) ;
 	printDB(&fListDB) ;
-	cout << "a" ;
+	
+	buildFPtree(&fListDB) ;
 }
 

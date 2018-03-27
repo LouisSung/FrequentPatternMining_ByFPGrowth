@@ -49,8 +49,7 @@ void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *o
 				fList->push_back(make_pair(*j, 1)) ;}			//第一次出現, 新增pair, 紀錄次數為1
 			else{
 				++(k->second) ;}			//第n次出現, 累加出現的次數
-		}
-	}
+		}}
 	
 	auto greaterByValue = [](pair<int,int> const & a, pair<int,int> const & b){			//magic!!!!!
 		return a.second != b.second?  a.second > b.second : a.first > b.first ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
