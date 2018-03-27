@@ -17,6 +17,7 @@ using std::pair ;
 
 vector<vector<int>> originalDB ;
 vector<pair<int, int>> fList ;
+FPtree fpTree ;
 
 int main(int argc, const char * argv[]){
 	createOriginalDB(&originalDB) ;
@@ -29,6 +30,7 @@ int main(int argc, const char * argv[]){
 	vector<vector<int>> &fListDB = originalDB ;			//建立別名
 	printDB(&fListDB) ;
 	
-	buildFPtree(&fListDB) ;
+	buildFPtreeByFlistDB(&fpTree, &fListDB) ;
+	fpTree.printFPtree(fpTree.getRoot()) ;
 }
 

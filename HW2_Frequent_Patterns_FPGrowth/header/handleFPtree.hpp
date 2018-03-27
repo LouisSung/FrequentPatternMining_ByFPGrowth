@@ -14,7 +14,8 @@
 using std::vector ;
 using std::pair ;
 
-void buildFPtree(vector<vector<int>> *fListDB) ;
+class FPtree ;
+void buildFPtreeByFlistDB(FPtree *fpTree, vector<vector<int>> *fListDB) ;
 
 struct TreeNode{
 	int _item, _itemCount ;
@@ -31,7 +32,8 @@ class FPtree{
 	TreeNode root ;
 public:
 	FPtree() ;
-	void insertNodeFromListAt(vector<int> *itemList, TreeNode *parrent) ;
-	TreeNode* getRootPointer() ;
+	void insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode) ;
+	void printFPtree(TreeNode *currentNode) ;
+	TreeNode* getRoot() ;
 };
 #endif /* handleFPtree_hpp */
