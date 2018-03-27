@@ -7,30 +7,27 @@
 //
 
 #include "handleFPtree.hpp"
+
 void buildFPtree(vector<vector<int>> *fListDB){
 	FPtree fpTree ;
 	for(auto i=fListDB->begin(); i!=fListDB->end(); ++i){
 		fpTree.insertNodeFromListAt(&(*i), fpTree.getRootPointer()) ;}
-	while(false){
-		
-	}
 }
 
 //==========
 TreeNode::TreeNode(int item, TreeNode *parrent){
 	_item = item ;
-	_itemCount = 1 ;
+	_itemCount = 1 ;			//出現一次
 	_childrenCount = 0 ;
-	_parrent = parrent ;
+	_parrent = parrent ;			//紀錄parrent
 	_nextSameItem = NULL ;
 	_children = vector<TreeNode>() ;
 }
+
 //==========
 FPtree::FPtree(): root(TreeNode(-1, NULL)){			//constructor預設建立一個item=-1, parrent=NULL的TreeNode作為root
 }
-TreeNode* FPtree::getRootPointer(){
-	return &root ;
-}
+
 void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *parrent){
 	if(itemList->size() > 0){			//還有item
 		int currentItem = (*itemList)[0] ;
@@ -53,4 +50,8 @@ void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *parrent){
 			insertNodeFromListAt(itemList, &(parrent->_children.back())) ;			//此處不能用newChild而要用parrent, 因為push_back是拷貝值而不是位址
 		}
 	}
+}
+
+TreeNode* FPtree::getRootPointer(){
+	return &root ;
 }

@@ -49,7 +49,8 @@ void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *o
 				fList->push_back(make_pair(*j, 1)) ;}			//第一次出現, 新增pair, 紀錄次數為1
 			else{
 				++(k->second) ;}			//第n次出現, 累加出現的次數
-		}}
+		}
+	}
 	
 	auto greaterByValue = [](pair<int,int> const & a, pair<int,int> const & b){			//magic!!!!!
 		return a.second != b.second?  a.second > b.second : a.first > b.first ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
@@ -57,20 +58,19 @@ void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *o
 }
 
 //==========
-void createFListDBfromOriginalDB(vector<vector<int>> *fListDB, vector<vector<int>> *originalDB, vector<pair<int, int>> *fList){
+void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vector<pair<int, int>> *fList){
 	vector<int> sortedTransaction ;
 	for(auto i=originalDB->begin(); i!=originalDB->end(); ++i){			//取得orginalDB每筆交易
 		sortedTransaction.clear() ;
 		for(auto j=fList->begin(); j!=fList->end(); ++j){			//取得fList內容、順序
 			if(find(i->begin(), i->end(), j->first) != i->end()){			//判斷fList內的item是否在orginalDB出現
 				sortedTransaction.push_back(j->first) ;}}
-		fListDB->push_back(sortedTransaction) ;			//放回排序後內容
-//		i->swap(sortedTransaction) ;			//直接修改orginalDB
+		i->swap(sortedTransaction) ;			//直接修改orginalDB
 	}
 }
 
 //==========
-void printDB(vector<vector<int>> *dataBase){
+void printDB(vector<vector<int>> *dataBase){			//印出database
 	cout << "資料庫大小: " << dataBase->size() << endl ;
 	
 	int number = 0 ;
@@ -82,3 +82,11 @@ void printDB(vector<vector<int>> *dataBase){
 	}
 }
 
+//==========
+void printFlist(vector<pair<int, int>> *fList){			//印出flist
+	cout << "\n=\nflist: " ;
+	auto i=fList->begin() ;
+	for(; i!=fList->end()-1; ++i){
+		cout << i->first << ", " ;}
+	cout << i->first << "\n=\n" << endl ;
+}

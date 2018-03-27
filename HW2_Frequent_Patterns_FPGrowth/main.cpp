@@ -10,30 +10,23 @@
 #include <vector>
 #include "handleDataBase.hpp"
 #include "handleFPtree.hpp"
-
 using std::cout ;
 using std::endl ;
 using std::vector ;
 using std::pair ;
 
-int transactionCount = 0 ;
-vector<vector<int>> originalDB, fListDB ;
+vector<vector<int>> originalDB ;
 vector<pair<int, int>> fList ;
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]){
 	createOriginalDB(&originalDB) ;
-	transactionCount = (int)originalDB.size() ;
 	printDB(&originalDB) ;
 	
 	getFrequentListFromDB(&fList, &originalDB) ;
+	printFlist(&fList) ;
 	
-	cout << "\nflist: " ;
-	for(auto i=fList.begin(); i!=fList.end()-1; ++i){
-		cout << i->first << ", " ;}
-	cout << (fList.end()-1)->first << endl ;
-	cout << "\n\n=\n" ;
-	
-	createFListDBfromOriginalDB(&fListDB, &originalDB, &fList) ;
+	transformOriginalDBIntoFListDBByFlist(&originalDB, &fList) ;
+	vector<vector<int>> &fListDB = originalDB ;			//建立別名
 	printDB(&fListDB) ;
 	
 	buildFPtree(&fListDB) ;
