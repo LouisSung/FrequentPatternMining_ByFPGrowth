@@ -13,10 +13,7 @@ using std::endl ;
 using std::pair ;
 using std::make_pair ;
 
-void buildFPtreeByFlistDB(FPtree *fpTree, vector<vector<int>> *fListDB){
-	for(auto i=fListDB->begin(); i!=fListDB->end(); ++i){
-		fpTree->insertNodeFromListAt(&(*i), fpTree->getRoot()) ;}
-}
+
 
 //==========
 TreeNode::TreeNode(int item, TreeNode *parrent){
@@ -29,10 +26,18 @@ TreeNode::TreeNode(int item, TreeNode *parrent){
 }
 
 //==========
-FPtree::FPtree(): root(TreeNode(-1, NULL)){			//constructor預設建立一個item=-1, parrent=NULL的TreeNode作為root
+FPtree::FPtree(vector<pair<int, int>> *fList): root(TreeNode(-1, NULL)){			//constructor預設建立一個item=-1, parrent=NULL的TreeNode作為root
+	headerTable.reserve(fList->size()) ;
+	for(auto i=fList->begin(); i!=fList->end(); ++i){
+		headerTable.push_back(make_pair(*i, (TreeNode*)NULL)) ;}
 }
 
-void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode){
+void FPtree::buildFPtreeByFlistDB(vector<vector<int>> *fListDB){
+	for(auto i=fListDB->begin(); i!=fListDB->end(); ++i){
+		this->insertNodeFromListAt(&(*i), this->getRoot()) ;}
+}
+
+void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode){ 
 	if(itemList->size() > 0){			//還有item
 		int currentItem = (*itemList)[0] ;
 		itemList->erase(itemList->begin()) ;			//取出第一個item編號, 並從itemList移除

@@ -15,22 +15,21 @@ using std::endl ;
 using std::vector ;
 using std::pair ;
 
-vector<vector<int>> originalDB ;
-vector<pair<int, int>> fList ;
-FPtree fpTree ;
-
 int main(int argc, const char * argv[]){
+	vector<vector<int>> originalDB ;			//讀檔建oDB
 	createOriginalDB(&originalDB) ;
 	printDB(&originalDB) ;
 	
+	vector<pair<int, int>> fList ;			//讀oDB建frequent list
 	getFrequentListFromDB(&fList, &originalDB) ;
 	printFlist(&fList) ;
 	
-	transformOriginalDBIntoFListDBByFlist(&originalDB, &fList) ;
+	transformOriginalDBIntoFListDBByFlist(&originalDB, &fList) ;			//oDB改按flist排序為fDB
 	vector<vector<int>> &fListDB = originalDB ;			//建立別名
 	printDB(&fListDB) ;
 	
-	buildFPtreeByFlistDB(&fpTree, &fListDB) ;
+	FPtree fpTree(&fList) ;			//fDB建FPtree
+	fpTree.buildFPtreeByFlistDB(&fListDB) ;
 	fpTree.printFPtree(fpTree.getRoot()) ;
 }
 

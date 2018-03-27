@@ -15,7 +15,7 @@ using std::vector ;
 using std::pair ;
 
 class FPtree ;
-void buildFPtreeByFlistDB(FPtree *fpTree, vector<vector<int>> *fListDB) ;
+
 
 struct TreeNode{
 	int _item, _itemCount ;
@@ -29,9 +29,13 @@ struct TreeNode{
 };
 
 class FPtree{
+	//typedef  HeaderTable ;
 	TreeNode root ;
+	vector<pair<pair<int, int>, TreeNode*>> headerTable ;
 public:
-	FPtree() ;
+	FPtree(vector<pair<int, int>> *fList) ;
+//	void createHeaderTableByFlist(vector<pair<int, int>> *fList) ;
+	void buildFPtreeByFlistDB(vector<vector<int>> *fListDB) ;
 	void insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode) ;
 	void printFPtree(TreeNode *currentNode) ;
 	TreeNode* getRoot() ;
