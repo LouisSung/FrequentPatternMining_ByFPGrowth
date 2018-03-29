@@ -23,7 +23,7 @@ struct TreeNode{
 	
 	TreeNode *_parrent ;
 	TreeNode *_nextSameItem ;
-	vector<TreeNode> _children;
+	vector<TreeNode*> _children;
 	
 	TreeNode(int item, TreeNode *parrent) ;
 };

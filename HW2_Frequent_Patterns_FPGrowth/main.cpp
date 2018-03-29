@@ -19,7 +19,7 @@ int main(int argc, const char * argv[]){
 	vector<vector<int>> originalDB ;			//讀檔建oDB
 	createOriginalDB(&originalDB) ;
 	printDB(&originalDB) ;
-	
+
 	vector<pair<int, int>> fList ;			//讀oDB建frequent list
 	getFrequentListFromDB(&fList, &originalDB) ;
 	printFlist(&fList) ;
