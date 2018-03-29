@@ -13,8 +13,6 @@ using std::endl ;
 using std::pair ;
 using std::make_pair ;
 
-
-
 //==========
 TreeNode::TreeNode(int item, TreeNode *parrent){
 	_item = item ;
@@ -87,13 +85,15 @@ void FPtree::printFPtree(TreeNode *currentNode){
 			printFPtree(*i) ;}
 		pathFromRootToLeaf.pop_back() ;			//pop目前item
 	}
-	else{
+	else if(pathFromRootToLeaf.size() > 1){
 		auto i=pathFromRootToLeaf.begin()+1 ;			//沒有child, 表示為葉節點, 準備印出root到leaf的path
 		for(; i!=pathFromRootToLeaf.end()-1; ++i){
 			cout << "<" << i->first << ": " << i->second << ">, " ;}
 		cout << "<" << i->first << ": " << i->second << ">" << endl ;
 		pathFromRootToLeaf.pop_back() ;			//pop目前節點
 	}
+	else if(pathFromRootToLeaf.size() == 1){			//只有root, 沒有item
+		cout << "FPtree為空" << endl ;}
 }
 
 TreeNode* FPtree::getRoot(){

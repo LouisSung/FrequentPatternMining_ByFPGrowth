@@ -38,7 +38,7 @@ void createOriginalDB(vector<vector<int>> *originalDB){
 }
 
 //==========
-void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *originalDB){
+void getFrequentListFromDB(vector<pair<int, int>> *fList, int minSupportCount, vector<vector<int>> *originalDB){
 	for(auto i=originalDB->begin(); i!=originalDB->end(); ++i){
 		for(auto j=i->begin(); j!=i->end(); ++j){			//每筆交易的個別item
 			auto k=fList->begin() ;			//iterator, 紀錄frequentOneItem目前位置
@@ -52,9 +52,14 @@ void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *o
 		}
 	}
 	
+	for(auto i=fList->begin(); i!=fList->end(); ++i){
+		if(i->second < minSupportCount){			//移除小於minSupportCount的item
+			fList->erase(i) ;
+			--i ;			//調整指標
+		}}
 	auto greaterByValue = [](pair<int,int> const & a, pair<int,int> const & b){			//magic!!!!!
 		return a.second != b.second?  a.second > b.second : a.first > b.first ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
-	sort(fList->begin(), fList->end(), greaterByValue);			//依照出現次數排序
+	sort(fList->begin(), fList->end(), greaterByValue) ;			//依照出現次數排序
 }
 
 //==========
@@ -65,7 +70,13 @@ void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vect
 		for(auto j=fList->begin(); j!=fList->end(); ++j){			//取得fList內容、順序
 			if(find(i->begin(), i->end(), j->first) != i->end()){			//判斷fList內的item是否在orginalDB出現
 				sortedTransaction.push_back(j->first) ;}}
-		i->swap(sortedTransaction) ;			//直接修改orginalDB
+		
+		if(sortedTransaction.size() == 0){			//該筆交易沒有任何item數量超過minSupportCount
+			originalDB->erase(i) ;			//從originalDB移除
+			--i ;			//調整iterator回被移除的位置
+		}
+		else{
+			i->swap(sortedTransaction) ;}			//直接修改orginalDB
 	}
 }
 
@@ -84,9 +95,13 @@ void printDB(vector<vector<int>> *dataBase){			//印出database
 
 //==========
 void printFlist(vector<pair<int, int>> *fList){			//印出flist
-	cout << "\n=\nflist: " ;
-	auto i=fList->begin() ;
-	for(; i!=fList->end()-1; ++i){
-		cout << i->first << ", " ;}
-	cout << i->first << "\n=\n" << endl ;
+	if(fList->size() > 0){
+		cout << "* flist: " ;
+		auto i=fList->begin() ;
+		for(; i!=fList->end()-1; ++i){
+			cout << "<" << i->first << ", " << i->second << ">, " ;}
+		cout  << "<" << i->first << ", " << i->second << ">" << endl ;
+	}
+	else{
+		cout << "fList為空" << endl ;}
 }

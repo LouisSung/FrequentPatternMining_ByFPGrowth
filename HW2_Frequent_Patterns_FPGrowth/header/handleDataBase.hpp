@@ -15,7 +15,7 @@ using std::vector ;
 using std::pair ;
 
 void createOriginalDB(vector<vector<int>> *originalDB) ;
-void getFrequentListFromDB(vector<pair<int, int>> *fList, vector<vector<int>> *originalDB) ;
+void getFrequentListFromDB(vector<pair<int, int>> *fList, int minSupportCount, vector<vector<int>> *originalDB) ;
 void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vector<pair<int, int>> *fList) ;
 
 void printDB(vector<vector<int>> *dataBase) ;
