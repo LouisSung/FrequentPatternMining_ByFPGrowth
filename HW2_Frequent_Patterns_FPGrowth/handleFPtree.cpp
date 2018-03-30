@@ -7,11 +7,13 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "handleFPtree.hpp"
 using std::cout ;
 using std::endl ;
 using std::pair ;
 using std::make_pair ;
+using std::reverse ;
 
 //==========
 TreeNode::TreeNode(int item, TreeNode *parrent){
@@ -26,7 +28,8 @@ TreeNode::TreeNode(int item, TreeNode *parrent){
 
 //==========
 FPtree::FPtree(vector<pair<int, int>> *fList): root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
-	headerTable.reserve(fList->size()) ;
+	headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
+	
 	for(auto i=fList->begin(); i!=fList->end(); ++i){
 		TreeNode *headNode = new TreeNode(i->first, (TreeNode*)NULL) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
 		headerTable.push_back(make_pair(*i, headNode)) ;
@@ -73,6 +76,49 @@ void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode){
 	}
 }
 
+void FPtree::mineFPtree(){
+	createConditionalPatternBases() ;
+	printConditionalPatternBases() ;
+}
+
+void FPtree::createConditionalPatternBases(){
+//	vector<pair<item編號, vector<pair<vector<單一路徑>, 路徑次數>>>> conditionalPatternBases
+	TreeNode *sameItem, *currentItem ;
+	vector<int> singlePath ;
+	vector<pair<vector<int>, int>> allPaths ;
+	int pathCount = 0;
+	
+	singlePath.reserve(512) ;
+	allPaths.reserve(512) ;
+	conditionalPatternBases.reserve(headerTable.size()) ;			//預留vector大小, cPatternBases數量和headerTable一樣
+	
+	for(auto i=headerTable.end()-1; i!=headerTable.begin()-1; --i){			//遍歷所有header table的item
+		sameItem = i->second->_nextSameItem ;			//利用headerTable找到該編號在FPtree中第一次出現的位置
+		
+		while(sameItem != (TreeNode*)NULL){			//遍歷FPtree中與該item同編號的所有節點
+			currentItem = sameItem->_parrent ;			//不紀錄葉節點, 從其parrent開始
+			pathCount = sameItem->_itemCount ;			//紀錄葉節點的次數, 作為此path的出現次數
+			
+			while (currentItem->_parrent != (TreeNode*)NULL) {			//遍歷該節點的所有parrent
+				singlePath.push_back(currentItem->_item) ;			//紀錄path
+				currentItem = currentItem->_parrent ;			//指向parrent
+			}
+			
+			if(singlePath.size() > 0){
+				reverse(singlePath.begin(), singlePath.end()) ;			//葉to根--反轉-->根to葉
+				allPaths.push_back(make_pair(singlePath, pathCount)) ;			//紀錄此item所有的path與出現次數
+				singlePath.clear() ;			//清除以記錄下一條path
+			}
+			sameItem = sameItem->_nextSameItem ;			//指向下一個同編號的節點
+		}
+		
+		if(allPaths.size() > 0){
+			conditionalPatternBases.push_back(make_pair(i->first.first, allPaths)) ;
+			allPaths.clear() ;			//清除以紀錄下一組paths
+		}
+	}
+}
+
 void FPtree::printFPtree(TreeNode *currentNode){
 	static vector<pair<int, int>> pathFromRootToLeaf ;			//static, 遞迴過程中保留值
 	
@@ -94,6 +140,20 @@ void FPtree::printFPtree(TreeNode *currentNode){
 	}
 	else if(pathFromRootToLeaf.size() == 1){			//只有root, 沒有item
 		cout << "FPtree為空" << endl ;}
+}
+
+void FPtree::printConditionalPatternBases(){
+	for(auto i=conditionalPatternBases.begin(); i!=conditionalPatternBases.end(); ++i){			//所有item
+		int pathCounter = 0 ;
+		cout << "\n* item: " << i->first << endl ;
+		for(auto j=i->second.begin() ; j!=i->second.end(); ++j){			//所有path
+			cout << "path " << ++pathCounter << ": <"  ;
+			auto k=j->first.begin() ;
+			for(; k!=j->first.end()-1; ++k){			//path內所有元素
+				cout << *k << "," ;}
+			cout << *k << "> 次數: " << j->second << endl ;
+		}
+	}
 }
 
 TreeNode* FPtree::getRoot(){

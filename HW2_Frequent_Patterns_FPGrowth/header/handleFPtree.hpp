@@ -32,11 +32,15 @@ class FPtree{
 	//typedef  HeaderTable ;
 	TreeNode root ;
 	vector<pair<pair<int, int>, TreeNode*>> headerTable ;
+	vector<pair<int, vector<pair<vector<int>, int>>>> conditionalPatternBases ;
+	void createConditionalPatternBases() ;
+	void printConditionalPatternBases() ;
 public:
 	FPtree(vector<pair<int, int>> *fList) ;
 //	void createHeaderTableByFlist(vector<pair<int, int>> *fList) ;
 	void buildFPtreeByFlistDB(vector<vector<int>> *fListDB) ;
 	void insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode) ;
+	void mineFPtree() ;
 	void printFPtree(TreeNode *currentNode) ;
 	TreeNode* getRoot() ;
 };

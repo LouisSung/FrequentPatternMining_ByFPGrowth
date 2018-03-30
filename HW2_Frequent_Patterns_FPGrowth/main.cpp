@@ -36,5 +36,6 @@ int main(int argc, const char * argv[]){
 	FPtree fpTree(&fList) ;			//fDB建FPtree
 	fpTree.buildFPtreeByFlistDB(&fListDB) ;
 	fpTree.printFPtree(fpTree.getRoot()) ;
+	fpTree.mineFPtree() ;
 }
 
