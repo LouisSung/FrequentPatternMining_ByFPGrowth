@@ -27,12 +27,15 @@ TreeNode::TreeNode(int item, TreeNode *parrent){
 }
 
 //==========
-FPtree::FPtree(vector<pair<int, int>> *fList): root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
-	headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
-	
-	for(auto i=fList->begin(); i!=fList->end(); ++i){
+FPtree::FPtree(vector<pair<int, int>> *fList, int minSupportCount, int conditionCount):
+_root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
+	_headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
+	_condition.reserve(conditionCount) ;
+	_minSupportCount = minSupportCount ;
+	_fList = *fList ;
+	for(auto i=_fList.begin(); i!=_fList.end(); ++i){
 		TreeNode *headNode = new TreeNode(i->first, (TreeNode*)NULL) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
-		headerTable.push_back(make_pair(*i, headNode)) ;
+		_headerTable.push_back(make_pair(*i, headNode)) ;
 	}
 }
 
@@ -41,13 +44,40 @@ void FPtree::buildFPtreeByFlistDB(vector<vector<int>> *fListDB){
 		this->insertNodeFromListAt(&(*i), this->getRoot()) ;}
 }
 
+void FPtree::mineFPtree(){
+	createConditionalPatternBases() ;
+	printConditionalPatternBases() ;
+	vector<FPtree*> allConditionalFPtree = createConditionalFPtree() ;
+	for(auto i=allConditionalFPtree.begin(); i!=allConditionalFPtree.end(); ++i){
+		(*i)->printFPtree() ;
+	}
+}
+
+void FPtree::printFPtree(){
+	if(_condition.size() == 0){
+		cout << "\n* FPtree: " << endl ;}
+	else{
+		cout << "\n* Conditional FP tree {" ;
+		auto i=_condition.begin();
+		for(; i!=_condition.end()-1; ++i){
+			cout << *i << ", ";}
+		cout << *i << "}: " << endl ;
+	}
+	treeTraversal(&_root) ;
+}
+
+TreeNode* FPtree::getRoot(){
+	return &_root ;
+}
+
+//===private function
 void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode){
 	if(itemList->size() > 0){			//還有item
 		int currentItem = (*itemList)[0] ;
 		itemList->erase(itemList->begin()) ;			//取出第一個item編號, 並從itemList移除
 		
 		TreeNode **pointerToPreviousNode = (TreeNode**)NULL ;			//用以紀錄從header開始走到最後node的address(即新node的前一個)
-		for(auto i=headerTable.begin(); i!=headerTable.end(); ++i){
+		for(auto i=_headerTable.begin(); i!=_headerTable.end(); ++i){
 			if(currentItem == i->first.first){			//從header table找到相符的item
 				TreeNode *previousNode = i->second ;
 				while(previousNode->_nextSameItem != (TreeNode*)NULL){			//一直往後找到該node沒有nextSameItem為止
@@ -76,9 +106,27 @@ void FPtree::insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode){
 	}
 }
 
-void FPtree::mineFPtree(){
-	createConditionalPatternBases() ;
-	printConditionalPatternBases() ;
+void FPtree::treeTraversal(TreeNode *currentNode){
+	static vector<pair<int, int>> pathFromRootToLeaf ;			//static, 遞迴過程中保留值
+	
+	pathFromRootToLeaf.push_back(make_pair(currentNode->_item, currentNode->_itemCount)) ;			//目前item放入vector
+	if(currentNode->_nextSameItem == (TreeNode*)NULL){			//沒有nextSameItem的話輸出負數以做辨認
+		(pathFromRootToLeaf.end()-1)->first *= -1 ;}
+	
+	if(currentNode->_childrenCount > 0){			//有child
+		for(auto i=currentNode->_children.begin(); i!=currentNode->_children.end(); ++i){			//遞迴並遍歷所有child
+			treeTraversal(*i) ;}
+		pathFromRootToLeaf.pop_back() ;			//pop目前item
+	}
+	else if(pathFromRootToLeaf.size() > 1){
+		auto i=pathFromRootToLeaf.begin()+1 ;			//沒有child, 表示為葉節點, 準備印出root到leaf的path
+		for(; i!=pathFromRootToLeaf.end()-1; ++i){
+			cout << "<" << i->first << ": " << i->second << ">, " ;}
+		cout << "<" << i->first << ": " << i->second << ">" << endl ;
+		pathFromRootToLeaf.pop_back() ;			//pop目前節點
+	}
+	else if(pathFromRootToLeaf.size() == 1){			//只有root, 沒有item
+		cout << "FPtree為空" << endl ;}
 }
 
 void FPtree::createConditionalPatternBases(){
@@ -90,9 +138,9 @@ void FPtree::createConditionalPatternBases(){
 	
 	singlePath.reserve(512) ;
 	allPaths.reserve(512) ;
-	conditionalPatternBases.reserve(headerTable.size()) ;			//預留vector大小, cPatternBases數量和headerTable一樣
+	_conditionalPatternBases.reserve(_headerTable.size()) ;			//預留vector大小, cPatternBases數量和headerTable一樣
 	
-	for(auto i=headerTable.end()-1; i!=headerTable.begin()-1; --i){			//遍歷所有header table的item
+	for(auto i=_headerTable.end()-1; i!=_headerTable.begin()-1; --i){			//遍歷所有header table的item
 		sameItem = i->second->_nextSameItem ;			//利用headerTable找到該編號在FPtree中第一次出現的位置
 		
 		while(sameItem != (TreeNode*)NULL){			//遍歷FPtree中與該item同編號的所有節點
@@ -113,41 +161,68 @@ void FPtree::createConditionalPatternBases(){
 		}
 		
 		if(allPaths.size() > 0){
-			conditionalPatternBases.push_back(make_pair(i->first.first, allPaths)) ;
+			_conditionalPatternBases.push_back(make_pair(i->first.first, allPaths)) ;
 			allPaths.clear() ;			//清除以紀錄下一組paths
 		}
 	}
 }
 
-void FPtree::printFPtree(TreeNode *currentNode){
-	static vector<pair<int, int>> pathFromRootToLeaf ;			//static, 遞迴過程中保留值
+vector<FPtree*> FPtree::createConditionalFPtree(){
+	//	vector<pair<item編號, vector<pair<vector<單一路徑>, 路徑次數>>>> conditionalPatternBases
+	FPtree *newConditionalFPtree ;
+	vector<FPtree*> allConditionalFPtrees;
+	vector<pair<int, int>> conditionalFList ;
+	vector<vector<int>> conditionalFListDB ;
 	
-	pathFromRootToLeaf.push_back(make_pair(currentNode->_item, currentNode->_itemCount)) ;			//目前item放入vector
-	if(currentNode->_nextSameItem == (TreeNode*)NULL){			//沒有nextSameItem的話輸出負數以做辨認
-		(pathFromRootToLeaf.end()-1)->first *= -1 ;}
+	conditionalFList.reserve(_fList.size()) ;			//conditionalFList小於等於fList的size
+	conditionalFListDB.reserve(_fList.size()) ;
 	
-	if(currentNode->_childrenCount > 0){			//有child
-		for(auto i=currentNode->_children.begin(); i!=currentNode->_children.end(); ++i){			//遞迴並遍歷所有child
-			printFPtree(*i) ;}
-		pathFromRootToLeaf.pop_back() ;			//pop目前item
+	for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//遍歷該item所有paths
+		for(auto j=i->second.begin(); j!=i->second.end(); ++j){			//遍歷各path
+			for(auto k=j->first.begin(); k!=j->first.end(); ++k){			//遍歷該path內所有item
+				auto l=conditionalFList.begin() ;
+				for(; l!=conditionalFList.end(); ++l){			//遍歷conditionalFList
+					if(l->first == *k){			//已出現過, 累計出現次數
+						l->second += j->second ;
+						break ;
+					}}
+				if(l == conditionalFList.end()){			//未出現過, 新增
+					conditionalFList.push_back(make_pair(*k, j->second)) ;}
+			}
+			for(int k=0; k<j->second; ++k){
+				conditionalFListDB.push_back(j->first) ;}			//紀錄n次此path
+		}
+		
+		for(auto j=conditionalFList.end()-1; j!=conditionalFList.begin()-1; --j){
+			if(j->second < _minSupportCount){			//從conditionalFList移除少於minSupportCount的item
+				conditionalFList.pop_back() ;
+				for(auto k=conditionalFListDB.begin(); k!=conditionalFListDB.end(); ++k){
+					if(k->back() == j->second){			//從conditionalFListDB移除少於minSupportCount的item
+						k->pop_back() ;}}
+			}
+			else{
+				break ;}
+		}
+		
+		newConditionalFPtree = new FPtree(&conditionalFList, _minSupportCount, (int)(this->_condition.size()+1)) ;
+		conditionalFList.clear() ;
+		newConditionalFPtree->buildFPtreeByFlistDB(&conditionalFListDB) ;
+		conditionalFListDB.clear() ;
+		newConditionalFPtree->_condition.push_back(i->first) ;
+		
+		allConditionalFPtrees.push_back(newConditionalFPtree) ;
 	}
-	else if(pathFromRootToLeaf.size() > 1){
-		auto i=pathFromRootToLeaf.begin()+1 ;			//沒有child, 表示為葉節點, 準備印出root到leaf的path
-		for(; i!=pathFromRootToLeaf.end()-1; ++i){
-			cout << "<" << i->first << ": " << i->second << ">, " ;}
-		cout << "<" << i->first << ": " << i->second << ">" << endl ;
-		pathFromRootToLeaf.pop_back() ;			//pop目前節點
-	}
-	else if(pathFromRootToLeaf.size() == 1){			//只有root, 沒有item
-		cout << "FPtree為空" << endl ;}
+	
+	return allConditionalFPtrees ;
 }
 
 void FPtree::printConditionalPatternBases(){
-	for(auto i=conditionalPatternBases.begin(); i!=conditionalPatternBases.end(); ++i){			//所有item
+	cout << "\n* ConditionalPatternBases: " ;
+	for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//所有item
 		int pathCounter = 0 ;
-		cout << "\n* item: " << i->first << endl ;
+		cout << "\n\titem: " << i->first << endl ;
 		for(auto j=i->second.begin() ; j!=i->second.end(); ++j){			//所有path
-			cout << "path " << ++pathCounter << ": <"  ;
+			cout << "\tpath " << ++pathCounter << ": <"  ;
 			auto k=j->first.begin() ;
 			for(; k!=j->first.end()-1; ++k){			//path內所有元素
 				cout << *k << "," ;}
@@ -156,6 +231,3 @@ void FPtree::printConditionalPatternBases(){
 	}
 }
 
-TreeNode* FPtree::getRoot(){
-	return &root ;
-}

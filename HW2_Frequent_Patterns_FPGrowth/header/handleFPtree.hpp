@@ -14,8 +14,7 @@
 using std::vector ;
 using std::pair ;
 
-class FPtree ;
-
+class FPtree;
 
 struct TreeNode{
 	int _item, _itemCount ;
@@ -29,19 +28,27 @@ struct TreeNode{
 };
 
 class FPtree{
-	//typedef  HeaderTable ;
-	TreeNode root ;
-	vector<pair<pair<int, int>, TreeNode*>> headerTable ;
-	vector<pair<int, vector<pair<vector<int>, int>>>> conditionalPatternBases ;
-	void createConditionalPatternBases() ;
-	void printConditionalPatternBases() ;
 public:
-	FPtree(vector<pair<int, int>> *fList) ;
-//	void createHeaderTableByFlist(vector<pair<int, int>> *fList) ;
+	FPtree(vector<pair<int, int>> *fList, int minSupportCount, int conditionCount) ;
 	void buildFPtreeByFlistDB(vector<vector<int>> *fListDB) ;
-	void insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode) ;
 	void mineFPtree() ;
-	void printFPtree(TreeNode *currentNode) ;
+	void printFPtree() ;
 	TreeNode* getRoot() ;
+	
+private:
+	TreeNode _root ;
+	int _minSupportCount ;
+	vector<pair<int, int>> _fList ;
+	vector<pair<pair<int, int>, TreeNode*>> _headerTable ;
+	vector<pair<int, vector<pair<vector<int>, int>>>> _conditionalPatternBases ;
+	vector<int> _condition ;
+	
+	void insertNodeFromListAt(vector<int> *itemList, TreeNode *currentNode) ;
+	void treeTraversal(TreeNode *currentNode) ;
+	
+	void createConditionalPatternBases() ;
+	vector<FPtree*> createConditionalFPtree() ;
+	void printConditionalPatternBases() ;
+	
 };
 #endif /* handleFPtree_hpp */

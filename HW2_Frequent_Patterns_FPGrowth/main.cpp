@@ -22,7 +22,7 @@ int main(int argc, const char * argv[]){
 	createOriginalDB(&originalDB) ;
 	printDB(&originalDB) ;
 	
-	double minSupportRatio = 0.5f ;
+	double minSupportRatio = 0.0f ;
 	int minSupportCount = round((int)originalDB.size()*minSupportRatio) ;			//計算所需的support數
 	cout << "\n* minSupport: " << minSupportCount << "" << endl ;
 	vector<pair<int, int>> fList ;			//讀oDB建frequent list
@@ -33,9 +33,9 @@ int main(int argc, const char * argv[]){
 	vector<vector<int>> &fListDB = originalDB ;			//建立別名
 	printDB(&fListDB) ;
 	
-	FPtree fpTree(&fList) ;			//fDB建FPtree
+	FPtree fpTree(&fList, minSupportCount, 0) ;			//fDB建FPtree
 	fpTree.buildFPtreeByFlistDB(&fListDB) ;
-	fpTree.printFPtree(fpTree.getRoot()) ;
+	fpTree.printFPtree() ;
 	fpTree.mineFPtree() ;
 }
 
