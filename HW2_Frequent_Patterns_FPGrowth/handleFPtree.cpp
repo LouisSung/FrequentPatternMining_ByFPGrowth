@@ -126,7 +126,9 @@ void FPtree::treeTraversal(TreeNode *currentNode){
 		pathFromRootToLeaf.pop_back() ;			//pop目前節點
 	}
 	else if(pathFromRootToLeaf.size() == 1){			//只有root, 沒有item
-		cout << "FPtree為空" << endl ;}
+		cout << "FPtree為空" << endl ;
+		pathFromRootToLeaf.clear() ;			//清空path
+	}
 }
 
 void FPtree::createConditionalPatternBases(){
@@ -178,30 +180,28 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 	conditionalFListDB.reserve(_fList.size()) ;
 	
 	for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//遍歷該item所有paths
+		conditionalFList = _fList ;
+		for(auto j=conditionalFList.begin(); j!=conditionalFList.end();++j){			//初始化conditionalFList
+			j->second = 0 ;}
 		for(auto j=i->second.begin(); j!=i->second.end(); ++j){			//遍歷各path
 			for(auto k=j->first.begin(); k!=j->first.end(); ++k){			//遍歷該path內所有item
-				auto l=conditionalFList.begin() ;
-				for(; l!=conditionalFList.end(); ++l){			//遍歷conditionalFList
+				for(auto l=conditionalFList.begin(); l!=conditionalFList.end(); ++l){			//遍歷conditionalFList
 					if(l->first == *k){			//已出現過, 累計出現次數
 						l->second += j->second ;
 						break ;
-					}}
-				if(l == conditionalFList.end()){			//未出現過, 新增
-					conditionalFList.push_back(make_pair(*k, j->second)) ;}
-			}
+					}}}
 			for(int k=0; k<j->second; ++k){
 				conditionalFListDB.push_back(j->first) ;}			//紀錄n次此path
 		}
 		
 		for(auto j=conditionalFList.end()-1; j!=conditionalFList.begin()-1; --j){
 			if(j->second < _minSupportCount){			//從conditionalFList移除少於minSupportCount的item
-				conditionalFList.pop_back() ;
 				for(auto k=conditionalFListDB.begin(); k!=conditionalFListDB.end(); ++k){
-					if(k->back() == j->second){			//從conditionalFListDB移除少於minSupportCount的item
-						k->pop_back() ;}}
+					for(auto l=k->end()-1; l!=k->begin()-1; --l){
+						if(*l == j->first){			//從conditionalFListDB移除少於minSupportCount的item
+							k->erase(l) ;}}}
+				conditionalFList.erase(j) ;
 			}
-			else{
-				break ;}
 		}
 		
 		newConditionalFPtree = new FPtree(&conditionalFList, _minSupportCount, (int)(this->_condition.size()+1)) ;
