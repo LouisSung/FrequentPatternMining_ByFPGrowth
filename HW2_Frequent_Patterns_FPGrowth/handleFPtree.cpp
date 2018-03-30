@@ -50,6 +50,7 @@ void FPtree::mineFPtree(){
 	vector<FPtree*> allConditionalFPtree = createConditionalFPtree() ;
 	for(auto i=allConditionalFPtree.begin(); i!=allConditionalFPtree.end(); ++i){
 		(*i)->printFPtree() ;
+		(*i)->mineFPtree() ;
 	}
 }
 
@@ -58,8 +59,8 @@ void FPtree::printFPtree(){
 		cout << "\n* FPtree: " << endl ;}
 	else{
 		cout << "\n* Conditional FP tree {" ;
-		auto i=_condition.begin();
-		for(; i!=_condition.end()-1; ++i){
+		auto i=_condition.end() -1;
+		for(; i!=_condition.begin(); --i){
 			cout << *i << ", ";}
 		cout << *i << "}: " << endl ;
 	}
@@ -183,6 +184,7 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 		conditionalFList = _fList ;
 		for(auto j=conditionalFList.begin(); j!=conditionalFList.end();++j){			//初始化conditionalFList
 			j->second = 0 ;}
+		
 		for(auto j=i->second.begin(); j!=i->second.end(); ++j){			//遍歷各path
 			for(auto k=j->first.begin(); k!=j->first.end(); ++k){			//遍歷該path內所有item
 				for(auto l=conditionalFList.begin(); l!=conditionalFList.end(); ++l){			//遍歷conditionalFList
@@ -201,32 +203,35 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 						if(*l == j->first){			//從conditionalFListDB移除少於minSupportCount的item
 							k->erase(l) ;}}}
 				conditionalFList.erase(j) ;
-			}
+			}}
+		
+		if(conditionalFList.size() > 0){
+			newConditionalFPtree = new FPtree(&conditionalFList, _minSupportCount, (int)(this->_condition.size()+1)) ;
+			newConditionalFPtree->buildFPtreeByFlistDB(&conditionalFListDB) ;
+			newConditionalFPtree->_condition = this->_condition ;
+			newConditionalFPtree->_condition.push_back(i->first) ;
+			allConditionalFPtrees.push_back(newConditionalFPtree) ;
 		}
-		
-		newConditionalFPtree = new FPtree(&conditionalFList, _minSupportCount, (int)(this->_condition.size()+1)) ;
 		conditionalFList.clear() ;
-		newConditionalFPtree->buildFPtreeByFlistDB(&conditionalFListDB) ;
 		conditionalFListDB.clear() ;
-		newConditionalFPtree->_condition.push_back(i->first) ;
-		
-		allConditionalFPtrees.push_back(newConditionalFPtree) ;
 	}
 	
 	return allConditionalFPtrees ;
 }
 
 void FPtree::printConditionalPatternBases(){
-	cout << "\n* ConditionalPatternBases: " ;
-	for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//所有item
-		int pathCounter = 0 ;
-		cout << "\n\titem: " << i->first << endl ;
-		for(auto j=i->second.begin() ; j!=i->second.end(); ++j){			//所有path
-			cout << "\tpath " << ++pathCounter << ": <"  ;
-			auto k=j->first.begin() ;
-			for(; k!=j->first.end()-1; ++k){			//path內所有元素
-				cout << *k << "," ;}
-			cout << *k << "> 次數: " << j->second << endl ;
+	if(_conditionalPatternBases.size() > 0){
+		cout << "\n* ConditionalPatternBases: " ;
+		for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//所有item
+			int pathCounter = 0 ;
+			cout << "\n\titem: " << i->first << endl ;
+			for(auto j=i->second.begin() ; j!=i->second.end(); ++j){			//所有path
+				cout << "\tpath " << ++pathCounter << ": <"  ;
+				auto k=j->first.begin() ;
+				for(; k!=j->first.end()-1; ++k){			//path內所有元素
+					cout << *k << "," ;}
+				cout << *k << "> 次數: " << j->second << endl ;
+			}
 		}
 	}
 }
