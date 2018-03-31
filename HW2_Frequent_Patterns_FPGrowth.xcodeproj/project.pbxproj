@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F01F8F2A206F633A00FD60ED /* handleFrequentPatterns.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F01F8F28206F633A00FD60ED /* handleFrequentPatterns.cpp */; };
 		F09D186E2068DD5400323DF0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D186D2068DD5400323DF0 /* main.cpp */; };
 		F09D18762068DE4700323DF0 /* handleDataBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D18742068DE4700323DF0 /* handleDataBase.cpp */; };
 		F09D187A206935CE00323DF0 /* handleFPtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F09D1878206935CE00323DF0 /* handleFPtree.cpp */; };
@@ -25,6 +26,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F01F8F28206F633A00FD60ED /* handleFrequentPatterns.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handleFrequentPatterns.cpp; sourceTree = "<group>"; };
+		F01F8F29206F633A00FD60ED /* handleFrequentPatterns.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = handleFrequentPatterns.hpp; sourceTree = "<group>"; };
 		F09D186A2068DD5400323DF0 /* HW2_Frequent_Patterns_FPGrowth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HW2_Frequent_Patterns_FPGrowth; sourceTree = BUILT_PRODUCTS_DIR; };
 		F09D186D2068DD5400323DF0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F09D18742068DE4700323DF0 /* handleDataBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = handleDataBase.cpp; sourceTree = "<group>"; };
@@ -66,6 +69,7 @@
 				F09D186D2068DD5400323DF0 /* main.cpp */,
 				F09D18742068DE4700323DF0 /* handleDataBase.cpp */,
 				F09D1878206935CE00323DF0 /* handleFPtree.cpp */,
+				F01F8F28206F633A00FD60ED /* handleFrequentPatterns.cpp */,
 				F09D18772068DE5700323DF0 /* header */,
 			);
 			path = HW2_Frequent_Patterns_FPGrowth;
@@ -76,6 +80,7 @@
 			children = (
 				F09D18752068DE4700323DF0 /* handleDataBase.hpp */,
 				F09D1879206935CE00323DF0 /* handleFPtree.hpp */,
+				F01F8F29206F633A00FD60ED /* handleFrequentPatterns.hpp */,
 			);
 			path = header;
 			sourceTree = "<group>";
@@ -139,6 +144,7 @@
 			files = (
 				F09D18762068DE4700323DF0 /* handleDataBase.cpp in Sources */,
 				F09D187A206935CE00323DF0 /* handleFPtree.cpp in Sources */,
+				F01F8F2A206F633A00FD60ED /* handleFrequentPatterns.cpp in Sources */,
 				F09D186E2068DD5400323DF0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

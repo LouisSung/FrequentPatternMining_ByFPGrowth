@@ -11,6 +11,7 @@
 #include <cmath>
 #include "handleDataBase.hpp"
 #include "handleFPtree.hpp"
+#include "handleFrequentPatterns.hpp"
 using std::cout ;
 using std::endl ;
 using std::vector ;
@@ -22,8 +23,9 @@ int main(int argc, const char * argv[]){
 	createOriginalDB(&originalDB) ;
 	printDB(&originalDB) ;
 	
-	double minSupportRatio = 0.0f ;
-	int minSupportCount = round((int)originalDB.size()*minSupportRatio) ;			//計算所需的support數
+	double minSupportRatio = 0.1f ;
+	int transactionCount = (int)originalDB.size() ;
+	int minSupportCount = round(transactionCount*minSupportRatio) ;			//計算所需的support數
 	cout << "\n* minSupport: " << minSupportCount << "" << endl ;
 	vector<pair<int, int>> fList ;			//讀oDB建frequent list
 	getFrequentListFromDB(&fList, minSupportCount, &originalDB) ;
@@ -37,5 +39,6 @@ int main(int argc, const char * argv[]){
 	fpTree.buildFPtreeByFlistDB(&fListDB) ;
 	fpTree.printFPtree() ;
 	fpTree.mineFPtree() ;
+	writeFrequentPatternsTo("sample.out", transactionCount) ;
 }
 

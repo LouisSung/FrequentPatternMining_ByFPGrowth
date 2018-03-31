@@ -8,12 +8,16 @@
 
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include "handleFPtree.hpp"
 using std::cout ;
 using std::endl ;
+using std::vector ;
 using std::pair ;
 using std::make_pair ;
 using std::reverse ;
+
+extern vector<pair<vector<int>, int>> frequentPatterns ;
 
 //==========
 TreeNode::TreeNode(int item, TreeNode *parrent){
@@ -47,6 +51,8 @@ void FPtree::buildFPtreeByFlistDB(vector<vector<int>> *fListDB){
 void FPtree::mineFPtree(){
 	createConditionalPatternBases() ;
 	printConditionalPatternBases() ;
+	getFrequentPatterns() ;
+	
 	vector<FPtree*> allConditionalFPtree = createConditionalFPtree() ;
 	for(auto i=allConditionalFPtree.begin(); i!=allConditionalFPtree.end(); ++i){
 		(*i)->printFPtree() ;
@@ -150,12 +156,13 @@ void FPtree::createConditionalPatternBases(){
 			currentItem = sameItem->_parrent ;			//不紀錄葉節點, 從其parrent開始
 			pathCount = sameItem->_itemCount ;			//紀錄葉節點的次數, 作為此path的出現次數
 			
-			while (currentItem->_parrent != (TreeNode*)NULL) {			//遍歷該節點的所有parrent
+			while (currentItem != (TreeNode*)NULL) {			//遍歷該節點的所有parrent
 				singlePath.push_back(currentItem->_item) ;			//紀錄path
 				currentItem = currentItem->_parrent ;			//指向parrent
 			}
 			
 			if(singlePath.size() > 0){
+				singlePath.pop_back() ;			//移除root
 				reverse(singlePath.begin(), singlePath.end()) ;			//葉to根--反轉-->根to葉
 				allPaths.push_back(make_pair(singlePath, pathCount)) ;			//紀錄此item所有的path與出現次數
 				singlePath.clear() ;			//清除以記錄下一條path
@@ -167,6 +174,18 @@ void FPtree::createConditionalPatternBases(){
 			_conditionalPatternBases.push_back(make_pair(i->first.first, allPaths)) ;
 			allPaths.clear() ;			//清除以紀錄下一組paths
 		}
+	}
+}
+
+void FPtree::getFrequentPatterns(){
+	for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){
+		int pathCount = 0 ;
+		for(auto j=i->second.begin(); j!=i->second.end(); ++j){			//紀錄各condition下的所有path出現次數總和
+			pathCount += j->second ;}
+		vector<int> currentCondition = _condition ;
+		currentCondition.push_back(i->first) ;			//把目前的item加入conditionalFPtree原本的conditon中
+		sort(currentCondition.begin(), currentCondition.end()) ;			//排序
+		frequentPatterns.push_back(make_pair(currentCondition, pathCount)) ;			//成為frequentPattern
 	}
 }
 
@@ -227,10 +246,13 @@ void FPtree::printConditionalPatternBases(){
 			cout << "\n\titem: " << i->first << endl ;
 			for(auto j=i->second.begin() ; j!=i->second.end(); ++j){			//所有path
 				cout << "\tpath " << ++pathCounter << ": <"  ;
-				auto k=j->first.begin() ;
-				for(; k!=j->first.end()-1; ++k){			//path內所有元素
-					cout << *k << "," ;}
-				cout << *k << "> 次數: " << j->second << endl ;
+				if(j->first.size() > 0){
+					auto k=j->first.begin() ;
+					for(; k!=j->first.end()-1; ++k){			//path內所有元素
+						cout << *k << "," ;}
+					cout << *k ;
+				}
+				cout << "> 次數: " << j->second << endl ;
 			}
 		}
 	}
