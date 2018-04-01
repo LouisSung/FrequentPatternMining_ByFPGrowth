@@ -23,7 +23,9 @@ using std::round ;
 using std::setprecision ;
 using std::fixed ;
 
+extern bool printFrequentPatternsOrNot ;
 vector<pair<vector<int>, int>> frequentPatterns ;
+static bool readyToWriteFile = false ;
 
 static void sortFrequentPatternsByLength() ;
 static void printFrequentPatterns(int transactionCount) ;
@@ -31,11 +33,12 @@ static void printFrequentPatterns(int transactionCount) ;
 void writeFrequentPatternsTo(string fileName, int transactionCount){
 	sortFrequentPatternsByLength() ;
 	
-	cout << "\n*FP個數: " << frequentPatterns.size() << endl ;
+	cout << "\n*FP總數: " << frequentPatterns.size() << endl ;
 	printFrequentPatterns(transactionCount) ;
 	
 	cout << "寫檔..." << endl ;
 	freopen(fileName.c_str(), "w", stdout) ;			//重新導向stdout
+	readyToWriteFile = true ;
 	printFrequentPatterns(transactionCount) ;
 }
 
@@ -56,11 +59,12 @@ static void sortFrequentPatternsByLength(){
 }
 
 static void printFrequentPatterns(int transactionCount){
-	for(auto i=frequentPatterns.begin(); i!=frequentPatterns.end(); ++i){
-		auto j=i->first.begin() ;
-		for(; j!=i->first.end()-1; ++j){
-			cout << *j << "," ;}
-		cout << *j << ":" << fixed << setprecision(4) << (double)i->second/transactionCount << endl ;
-	}
+	if(printFrequentPatternsOrNot == true or readyToWriteFile == true){
+		for(auto i=frequentPatterns.begin(); i!=frequentPatterns.end(); ++i){
+			auto j=i->first.begin() ;
+			for(; j!=i->first.end()-1; ++j){
+				cout << *j << "," ;}
+			cout << *j << ":" << fixed << setprecision(4) << (double)i->second/transactionCount << endl ;
+		}}
 }
 

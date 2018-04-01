@@ -17,6 +17,8 @@ using std::pair ;
 using std::make_pair ;
 using std::reverse ;
 
+extern bool printFPtreeOrNot ;
+extern bool printConditionalPatternBasesOrNot ;
 extern vector<pair<vector<int>, int>> frequentPatterns ;
 
 //==========
@@ -34,8 +36,8 @@ TreeNode::TreeNode(int item, TreeNode *parrent){
 FPtree::FPtree(vector<pair<int, int>> *fList, int minSupportCount, int conditionCount):
 _root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
 	_headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
-	_condition.reserve(conditionCount) ;
 	_minSupportCount = minSupportCount ;
+	_condition.reserve(conditionCount) ;
 	_fList = *fList ;
 	for(auto i=_fList.begin(); i!=_fList.end(); ++i){
 		TreeNode *headNode = new TreeNode(i->first, (TreeNode*)NULL) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
@@ -52,6 +54,7 @@ void FPtree::mineFPtree(){
 	createConditionalPatternBases() ;
 	printConditionalPatternBases() ;
 	getFrequentPatterns() ;
+	cout << "目前fp個數: "<< frequentPatterns.size() << endl ;
 	
 	vector<FPtree*> allConditionalFPtree = createConditionalFPtree() ;
 	for(auto i=allConditionalFPtree.begin(); i!=allConditionalFPtree.end(); ++i){
@@ -61,16 +64,18 @@ void FPtree::mineFPtree(){
 }
 
 void FPtree::printFPtree(){
-	if(_condition.size() == 0){
-		cout << "\n* FPtree: " << endl ;}
-	else{
-		cout << "\n* Conditional FP tree {" ;
-		auto i=_condition.end() -1;
-		for(; i!=_condition.begin(); --i){
-			cout << *i << ", ";}
-		cout << *i << "}: " << endl ;
+	if(printFPtreeOrNot == true){
+		if(_condition.size() == 0){
+			cout << "\n* FPtree: " << endl ;}
+		else{
+			cout << "\n* Conditional FP tree {" ;
+			auto i=_condition.end() -1;
+			for(; i!=_condition.begin(); --i){
+				cout << *i << ", ";}
+			cout << *i << "}: " << endl ;
+		}
+		treeTraversal(&_root) ;
 	}
-	treeTraversal(&_root) ;
 }
 
 TreeNode* FPtree::getRoot(){
@@ -239,7 +244,7 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 }
 
 void FPtree::printConditionalPatternBases(){
-	if(_conditionalPatternBases.size() > 0){
+	if(printConditionalPatternBasesOrNot == true and _conditionalPatternBases.size() > 0){
 		cout << "\n* ConditionalPatternBases: " ;
 		for(auto i=_conditionalPatternBases.begin(); i!=_conditionalPatternBases.end(); ++i){			//所有item
 			int pathCounter = 0 ;

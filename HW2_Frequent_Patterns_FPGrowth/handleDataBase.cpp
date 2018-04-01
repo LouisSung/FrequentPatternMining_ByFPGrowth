@@ -13,16 +13,20 @@ using std::cin ;
 using std::cout ;
 using std::endl ;
 using std::string ;
+using std::vector ;
 using std::istringstream ;
 using std::stoi ;
-using std::map ;
-using std::make_pair ;
 using std::pair ;
+using std::make_pair ;
 using std::sort ;
 using std::find ;
 
-void createOriginalDB(vector<vector<int>> *originalDB){
-	freopen("sample.in", "r", stdin) ;			//重新導向
+extern bool printDataBaseOrNot ;
+extern bool printFlistOrNot ;
+
+//==========
+void createOriginalDB(string fileName, vector<vector<int>> *originalDB){
+	freopen(fileName.c_str(), "r", stdin) ;			//重新導向
 	string singleLine ;
 	vector<int> singleTransaction ;
 	singleTransaction.reserve(100) ;			//每行(交易)最多100個item
@@ -82,26 +86,31 @@ void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vect
 
 //==========
 void printDB(vector<vector<int>> *dataBase){			//印出database
-	cout << "資料庫大小: " << dataBase->size() << endl ;
-	
-	int number = 0 ;
-	for(auto i=dataBase->begin(); i!=dataBase->end(); ++i){
-		cout << ++number <<":\t  " ;
-		for(auto j=i->begin(); j!=i->end()-1; ++j){
-			cout << *j << ", " ;}
-		cout << *(i->end()-1) << endl ;
+	if(printDataBaseOrNot == true){
+		cout << "資料庫大小: " << dataBase->size() << endl ;
+		
+		int number = 0 ;
+		for(auto i=dataBase->begin(); i!=dataBase->end(); ++i){
+			cout << ++number <<":\t  " ;
+			auto j=i->begin() ;
+			for(; j!=i->end()-1; ++j){
+				cout << *j << ", " ;}
+			cout << *j << endl ;
+		}
 	}
 }
 
 //==========
 void printFlist(vector<pair<int, int>> *fList){			//印出flist
-	if(fList->size() > 0){
-		cout << "* flist: " ;
-		auto i=fList->begin() ;
-		for(; i!=fList->end()-1; ++i){
-			cout << "<" << i->first << ", " << i->second << ">, " ;}
-		cout  << "<" << i->first << ", " << i->second << ">" << endl ;
+	if(printFlistOrNot == true){
+		if(fList->size() > 0){
+			cout << "* flist: " ;
+			auto i=fList->begin() ;
+			for(; i!=fList->end()-1; ++i){
+				cout << "<" << i->first << ", " << i->second << ">, " ;}
+			cout  << "<" << i->first << ", " << i->second << ">" << endl ;
+		}
+		else{
+			cout << "fList為空" << endl ;}
 	}
-	else{
-		cout << "fList為空" << endl ;}
 }
