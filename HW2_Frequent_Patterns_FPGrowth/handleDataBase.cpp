@@ -6,6 +6,7 @@
 //  Copyright © 2018年 LS. All rights reserved.
 //
 
+#include <fstream>
 #include <sstream>
 #include <algorithm>
 #include "handleDataBase.hpp"
@@ -14,6 +15,7 @@ using std::cout ;
 using std::endl ;
 using std::string ;
 using std::vector ;
+using std::ifstream ;
 using std::istringstream ;
 using std::stoi ;
 using std::pair ;
@@ -26,12 +28,13 @@ extern bool printFlistOrNot ;
 
 //==========
 void createOriginalDB(string fileName, vector<vector<int>> *originalDB){
-	freopen(fileName.c_str(), "r", stdin) ;			//重新導向
+	ifstream fin(fileName) ;
 	string singleLine ;
 	vector<int> singleTransaction ;
 	singleTransaction.reserve(100) ;			//每行(交易)最多100個item
+	originalDB->reserve(128) ;			//為push_back預留128的空間
 	
-	while(!(getline(cin, singleLine).eof())){			//讀取一行
+	while(getline(fin, singleLine)){			//讀取一行
 		singleTransaction.clear() ;
 		istringstream ssline(singleLine) ;
 		string singleItem ;			//取得該交易個別的item
@@ -39,6 +42,7 @@ void createOriginalDB(string fileName, vector<vector<int>> *originalDB){
 			singleTransaction.push_back(stoi(singleItem)) ;}			//將個別item放入該交易
 		originalDB->push_back(singleTransaction) ;			//將該交易存入資料庫
 	}
+	fin.close() ;
 }
 
 //==========

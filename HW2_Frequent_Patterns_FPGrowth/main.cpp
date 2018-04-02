@@ -70,5 +70,5 @@ int main(int argc, const char * argv[]){
 
 //停止計時, stdout已被導向寫檔, 改用stderr
 	clock_t stop = clock() ;
-	cerr << "共" << (double)(stop-start)/CLOCKS_PER_SEC << "秒" << endl ;
+	cout << "共" << (double)(stop-start)/CLOCKS_PER_SEC << "秒" << endl ;
 }
