@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
@@ -17,41 +16,39 @@ using std::cout ;
 using std::endl ;
 using std::ofstream ;
 using std::string ;
-using std::vector ;
 using std::sort ;
-using std::pair ;
-using std::make_pair ;
 using std::round ;
-using std::setprecision ;
 using std::fixed ;
+using std::setprecision ;
 
-extern bool printFrequentPatternsOrNot ;
-vector<pair<vector<int>, int>> frequentPatterns ;
+FrequentPatternTable frequentPatterns ;
 
 static void sortFrequentPatternsByLength() ;
-static void printFrequentPatterns(int transactionCount) ;
-static void writeFrequentPatternsToFile(string fileName, int transactionCount) ;
+static void printFrequentPatternTable(int transactionCount) ;
+static void writeFrequentPatternTableToFile(string fileName, int transactionCount) ;
 
+//==========
 void writeFrequentPatternsTo(string fileName, int transactionCount){
 	sortFrequentPatternsByLength() ;
 	
-	cout << "\n*FP總數: " << frequentPatterns.size() << endl ;
-	printFrequentPatterns(transactionCount) ;
+	cout << "\n*FP總數: " << frequentPatterns.size() << "\n" ;
+	printFrequentPatternTable(transactionCount) ;
 	
-	cout << "寫檔..." ;
-	writeFrequentPatternsToFile(fileName, transactionCount) ;
+	cout << "寫檔...\n" ;
+	writeFrequentPatternTableToFile(fileName, transactionCount) ;
 	cout << "完成" << endl ;
 }
 
+//==========
 static void sortFrequentPatternsByLength(){
-	auto greaterBySizeThenValue = [](pair<vector<int>, int> const & a, pair<vector<int>, int> const & b){			//magic!!!!!
-		if(a.first.size() != b.first.size()){
-			return a.first.size() < b.first.size() ;}
+	auto greaterBySizeThenValue = [](SingleFrequentPattern const &a, SingleFrequentPattern const &b){			//magic!!!!!
+		if(a.frequentPattern.size() != b.frequentPattern.size()){
+			return a.frequentPattern.size() < b.frequentPattern.size() ;}
 		else{
-			for(int i=0; i<a.first.size(); ++i){
-				if(a.first[i] < b.first[i]){
+			for(int i=0; i<a.frequentPattern.size(); ++i){
+				if(a.frequentPattern[i] < b.frequentPattern[i]){
 					return true ;}
-				else if(a.first[i] > b.first[i]){
+				else if(a.frequentPattern[i] > b.frequentPattern[i]){
 					return false ;}
 			}
 			return false ;
@@ -59,23 +56,23 @@ static void sortFrequentPatternsByLength(){
 	sort(frequentPatterns.begin(), frequentPatterns.end(), greaterBySizeThenValue) ;
 }
 
-static void printFrequentPatterns(int transactionCount){
-	if(printFrequentPatternsOrNot == true){
+static void printFrequentPatternTable(int transactionCount){
+	if(printOrNot.frequentPatternTable == true){
 		for(auto i=frequentPatterns.begin(); i!=frequentPatterns.end(); ++i){
-			auto j=i->first.begin() ;
-			for(; j!=i->first.end()-1; ++j){
+			auto j=i->frequentPattern.begin() ;
+			for(; j!=i->frequentPattern.end()-1; ++j){
 				cout << *j << "," ;}
-			cout << *j << ":" << fixed << setprecision(4) << (double)i->second/transactionCount << endl ;
+			cout << *j << ":" << fixed << setprecision(4) << (double)i->frequentPatternCount/transactionCount << "\n" ;
 		}}
 }
 
-static void writeFrequentPatternsToFile(string fileName, int transactionCount){
+static void writeFrequentPatternTableToFile(string fileName, int transactionCount){
 	ofstream fout(fileName) ;
 	for(auto i=frequentPatterns.begin(); i!=frequentPatterns.end(); ++i){
-		auto j=i->first.begin() ;
-		for(; j!=i->first.end()-1; ++j){
+		auto j=i->frequentPattern.begin() ;
+		for(; j!=i->frequentPattern.end()-1; ++j){
 			fout << *j << "," ;}
-		fout << *j << ":" << fixed << setprecision(4) << (double)i->second/transactionCount << "\n" ;
+		fout << *j << ":" << fixed << setprecision(4) << (double)i->frequentPatternCount/transactionCount << "\n" ;
 	}
 	fout.close() ;
 }

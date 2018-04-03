@@ -6,6 +6,7 @@
 //  Copyright © 2018年 LS. All rights reserved.
 //
 
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -14,23 +15,17 @@ using std::cin ;
 using std::cout ;
 using std::endl ;
 using std::string ;
-using std::vector ;
 using std::ifstream ;
 using std::istringstream ;
 using std::stoi ;
-using std::pair ;
-using std::make_pair ;
 using std::sort ;
 using std::find ;
 
-extern bool printDataBaseOrNot ;
-extern bool printFlistOrNot ;
-
 //==========
-void createOriginalDB(string fileName, vector<vector<int>> *originalDB){
+void createOriginalDB(string fileName, Database *originalDB){
 	ifstream fin(fileName) ;
 	string singleLine ;
-	vector<int> singleTransaction ;
+	Transaction singleTransaction ;
 	singleTransaction.reserve(100) ;			//每行(交易)最多100個item
 	originalDB->reserve(128) ;			//為push_back預留128的空間
 	
@@ -46,38 +41,38 @@ void createOriginalDB(string fileName, vector<vector<int>> *originalDB){
 }
 
 //==========
-void getFrequentListFromDB(vector<pair<int, int>> *fList, int minSupportCount, vector<vector<int>> *originalDB){
+void getFrequentListFromDB(FList *fList, int minSupportCount, Database *originalDB){
 	for(auto i=originalDB->begin(); i!=originalDB->end(); ++i){
 		for(auto j=i->begin(); j!=i->end(); ++j){			//每筆交易的個別item
 			auto k=fList->begin() ;			//iterator, 紀錄frequentOneItem目前位置
 			for(; k!=fList->end(); ++k){
-				if(k->first == *j){			//找到同樣的item, 表示已記錄過, break
+				if(k->itemName == *j){			//找到同樣的item, 表示已記錄過, break
 					break ;}}
 			if(k == fList->end()){			//沒找到
-				fList->push_back(make_pair(*j, 1)) ;}			//第一次出現, 新增pair, 紀錄次數為1
+				fList->push_back(Item(*j, 1)) ;}			//第一次出現, 紀錄item出現次數為1
 			else{
-				++(k->second) ;}			//第n次出現, 累加出現的次數
+				++(k->itemCount) ;}			//第n次出現, 累加出現的次數
 		}
 	}
 	
 	for(auto i=fList->begin(); i!=fList->end(); ++i){
-		if(i->second < minSupportCount){			//移除小於minSupportCount的item
+		if(i->itemCount < minSupportCount){			//移除小於minSupportCount的item
 			fList->erase(i) ;
 			--i ;			//調整指標
 		}}
-	auto greaterByValue = [](pair<int,int> const & a, pair<int,int> const & b){			//magic!!!!!
-		return a.second != b.second?  a.second > b.second : a.first > b.first ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
+	auto greaterByValue = [](Item const & a, Item const & b){			//magic!!!!!
+		return a.itemCount != b.itemCount?  a.itemCount > b.itemCount : a.itemName < b.itemName ;} ;			//自訂比較器, 兩數不同用value排, 否則用key排
 	sort(fList->begin(), fList->end(), greaterByValue) ;			//依照出現次數排序
 }
 
 //==========
-void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vector<pair<int, int>> *fList){
-	vector<int> sortedTransaction ;
+void transformOriginalDBIntoFListDBByFlist(Database *originalDB, FList *fList){
+	Transaction sortedTransaction ;
 	for(auto i=originalDB->begin(); i!=originalDB->end(); ++i){			//取得orginalDB每筆交易
 		sortedTransaction.clear() ;
 		for(auto j=fList->begin(); j!=fList->end(); ++j){			//取得fList內容、順序
-			if(find(i->begin(), i->end(), j->first) != i->end()){			//判斷fList內的item是否在orginalDB出現
-				sortedTransaction.push_back(j->first) ;}}
+			if(find(i->begin(), i->end(), j->itemName) != i->end()){			//判斷fList內的item是否在orginalDB出現
+				sortedTransaction.push_back(j->itemName) ;}}
 		
 		if(sortedTransaction.size() == 0){			//該筆交易沒有任何item數量超過minSupportCount
 			originalDB->erase(i) ;			//從originalDB移除
@@ -89,30 +84,30 @@ void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vect
 }
 
 //==========
-void printDB(vector<vector<int>> *dataBase){			//印出database
-	if(printDataBaseOrNot == true){
-		cout << "資料庫大小: " << dataBase->size() << endl ;
-		
-		int number = 0 ;
+void printDB(Database *dataBase){			//印出database
+	if(printOrNot.database == true){
+		cout << "資料庫大小: " << dataBase->size() << "\n" ;
+		int count = 0 ;
 		for(auto i=dataBase->begin(); i!=dataBase->end(); ++i){
-			cout << ++number <<":\t  " ;
+			cout << ++count <<":\t  " ;
 			auto j=i->begin() ;
 			for(; j!=i->end()-1; ++j){
 				cout << *j << ", " ;}
-			cout << *j << endl ;
+			cout << *j << "\n" ;
 		}
+		cout << endl ;
 	}
 }
 
 //==========
-void printFlist(vector<pair<int, int>> *fList){			//印出flist
-	if(printFlistOrNot == true){
+void printFlist(FList *fList){			//印出flist
+	if(printOrNot.fList == true){
 		if(fList->size() > 0){
 			cout << "* flist: " ;
 			auto i=fList->begin() ;
 			for(; i!=fList->end()-1; ++i){
-				cout << "<" << i->first << ", " << i->second << ">, " ;}
-			cout  << "<" << i->first << ", " << i->second << ">" << endl ;
+				cout << "<" << i->itemName << ", " << i->itemCount << ">, " ;}
+			cout  << "<" << i->itemName << ", " << i->itemCount << ">" << endl ;
 		}
 		else{
 			cout << "fList為空" << endl ;}

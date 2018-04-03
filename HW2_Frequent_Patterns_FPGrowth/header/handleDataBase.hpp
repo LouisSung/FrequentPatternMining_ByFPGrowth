@@ -9,16 +9,13 @@
 #ifndef createOriginalDB_hpp
 #define createOriginalDB_hpp
 
-#include <iostream>
-#include <vector>
+#include "handleTypesAndParameters.hpp"
 using std::string ;
-using std::vector ;
-using std::pair ;
 
-void createOriginalDB(string fileName, vector<vector<int>> *originalDB) ;
-void getFrequentListFromDB(vector<pair<int, int>> *fList, int minSupportCount, vector<vector<int>> *originalDB) ;
-void transformOriginalDBIntoFListDBByFlist(vector<vector<int>> *originalDB, vector<pair<int, int>> *fList) ;
+void createOriginalDB(string fileName, Database *originalDB) ;
+void getFrequentListFromDB(FList *fList, int minSupportCount, Database *originalDB) ;
+void transformOriginalDBIntoFListDBByFlist(Database *originalDB, FList *fList) ;
 
-void printDB(vector<vector<int>> *dataBase) ;
-void printFlist(vector<pair<int, int>> *fList) ;
+void printDB(Database *dataBase) ;
+void printFlist(FList *fList) ;
 #endif /* createOriginalDB_hpp */

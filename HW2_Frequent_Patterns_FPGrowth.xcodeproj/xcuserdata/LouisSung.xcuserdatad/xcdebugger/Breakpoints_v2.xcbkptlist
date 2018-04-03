@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/main.cpp"
-            timestampString = "544347106.479225"
+            timestampString = "544444617.559088"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "68"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/main.cpp"
-            timestampString = "544347106.4808969"
+            timestampString = "544444617.559754"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "main(int argc, const char * argv[])"
             landmarkType = "9">
          </BreakpointContent>
@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleDataBase.cpp"
-            timestampString = "544347106.482401"
+            timestampString = "544438631.016687"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "printDB(vector&lt;vector&lt;int&gt;&gt; *dataBase)"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "printDB(Database *dataBase)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleFPtree.cpp"
-            timestampString = "544347106.483598"
+            timestampString = "544444617.560239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
             landmarkName = "FPtree::createConditionalFPtree()"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleFPtree.cpp"
-            timestampString = "544347106.484183"
+            timestampString = "544444617.560334"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
             landmarkName = "FPtree::createConditionalPatternBases()"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleFPtree.cpp"
-            timestampString = "544347106.48464"
+            timestampString = "544444617.560406"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
             landmarkName = "FPtree::treeTraversal(TreeNode *currentNode)"
             landmarkType = "7">
          </BreakpointContent>
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleFPtree.cpp"
-            timestampString = "544347106.4850971"
+            timestampString = "544444617.560474"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
             landmarkName = "FPtree::createConditionalFPtree()"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,13 +122,29 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HW2_Frequent_Patterns_FPGrowth/handleFPtree.cpp"
-            timestampString = "544347106.485518"
+            timestampString = "544444617.560544"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "FPtree::createConditionalFPtree()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HW2_Frequent_Patterns_FPGrowth/main.cpp"
+            timestampString = "544444617.560612"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "main(int argc, const char * argv[])"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

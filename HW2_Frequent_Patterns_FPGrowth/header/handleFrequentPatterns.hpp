@@ -9,8 +9,9 @@
 #ifndef handleFrequentPatterns_hpp
 #define handleFrequentPatterns_hpp
 
-#include <iostream>
+#include "handleTypesAndParameters.hpp"
 using std::string ;
+
 void writeFrequentPatternsTo(string fileName, int transactionCount) ;
 #endif /* handleFrequentPatterns_hpp */
 

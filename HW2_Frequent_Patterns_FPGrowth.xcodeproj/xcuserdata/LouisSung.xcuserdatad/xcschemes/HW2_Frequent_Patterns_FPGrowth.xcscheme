@@ -63,6 +63,12 @@
             ReferencedContainer = "container:HW2_Frequent_Patterns_FPGrowth.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "0.1 sample.in sample.out -all -fpcount"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
       <LocationScenarioReference
