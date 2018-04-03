@@ -60,7 +60,7 @@ int main(int argc, const char * argv[]){
 	printDB(&fListDB) ;
 
 //利用fListDB建FPtree
-	FPtree fpTree(&fList, minSupportCount, 0) ;			//fDB建FPtree
+	FPtree fpTree(&fList, 0) ;			//fDB建FPtree
 	fpTree.buildFPtreeByFlistDB(&fListDB) ;
 	fpTree.printFPtree() ;
 	cout << "開始mining...\n" ;

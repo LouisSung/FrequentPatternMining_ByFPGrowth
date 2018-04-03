@@ -13,7 +13,7 @@
 
 class FPtree{
 public:
-	FPtree(FList *fList, int minSupportCount, int conditionCount) ;
+	FPtree(FList *fList, int conditionCount) ;
 	void buildFPtreeByFlistDB(Database *fListDB) ;
 	void mineFPtree() ;
 	void printFPtree() ;
@@ -21,7 +21,6 @@ public:
 	
 private:
 	TreeNode _root ;
-	int _minSupportCount ;
 	FList _fList ;
 	HeaderTable _headerTable ;
 	ConditionalPatternBases _conditionalPatternBases ;

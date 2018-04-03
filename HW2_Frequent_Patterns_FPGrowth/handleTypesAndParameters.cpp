@@ -31,14 +31,14 @@ nextSameItem((TreeNode*) NULL){
 
 //==========
 SingleItemHeader::SingleItemHeader(Item item, TreeNode header):
-item(item), header(header){
+item(item),
+header(header){
 }
 
 //==========
 SingleConditionalPatternBase::SingleConditionalPatternBase(int conditionalItemName, const AllConditionalPath &singlePath):
 conditionalItemName(conditionalItemName),
 allConditionalPaths(singlePath){
-	this->conditionalItemName = conditionalItemName ;
 }
 
 SingleFrequentPattern::SingleFrequentPattern(FrequentPattern frequentPattern, int frequentPatternCount):

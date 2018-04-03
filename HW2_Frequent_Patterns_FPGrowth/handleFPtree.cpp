@@ -17,16 +17,15 @@ using std::reverse ;
 extern FrequentPatternTable frequentPatterns ;
 
 //==========
-FPtree::FPtree(FList *fList, int minSupportCount, int conditionCount):
+FPtree::FPtree(FList *fList, int conditionCount):
 _condition(),
 _root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
 	_headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
-	_minSupportCount = minSupportCount ;
 	_condition.reserve(conditionCount) ;
 	_fList = *fList ;
 	for(auto i=_fList.begin(); i!=_fList.end(); ++i){
 //		TreeNode *headNode = new TreeNode(i->itemName, (TreeNode*)NULL) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
-		_headerTable.push_back(SingleItemHeader(Item(i->itemName, i->itemCount), TreeNode(i->itemName, (TreeNode*)NULL))) ;
+		_headerTable.emplace_back(SingleItemHeader(Item(i->itemName, i->itemCount), TreeNode(i->itemName, (TreeNode*)NULL))) ;
 	}
 }
 
@@ -107,7 +106,7 @@ void FPtree::insertNodeFromListAt(Transaction *itemList, TreeNode *currentNode){
 void FPtree::treeTraversal(TreeNode *currentNode){
 	static vector<Item> pathFromRootToLeaf ;			//static, 遞迴過程中保留值
 	
-	pathFromRootToLeaf.push_back(Item(currentNode->itemName, currentNode->itemCount)) ;			//目前item放入vector
+	pathFromRootToLeaf.emplace_back(Item(currentNode->itemName, currentNode->itemCount)) ;			//目前item放入vector
 	if(currentNode->nextSameItem == (TreeNode*)NULL){			//沒有nextSameItem的話輸出負數以做辨認
 		(pathFromRootToLeaf.end()-1)->itemName *= -1 ;}
 	
@@ -160,7 +159,7 @@ void FPtree::createConditionalPatternBases(){
 		}
 		
 		if(allPaths.size() > 0){
-			_conditionalPatternBases.push_back(SingleConditionalPatternBase(i->item.itemName, allPaths)) ;
+			_conditionalPatternBases.emplace_back(SingleConditionalPatternBase(i->item.itemName, allPaths)) ;
 			allPaths.clear() ;			//清除以紀錄下一組paths
 		}
 	}
@@ -174,7 +173,7 @@ void FPtree::getFrequentPatterns(){
 		FrequentPattern currentCondition = _condition ;
 		currentCondition.push_back(i->conditionalItemName) ;			//把目前的item加入conditionalFPtree原本的conditon中
 		sort(currentCondition.begin(), currentCondition.end()) ;			//排序
-		frequentPatterns.push_back(SingleFrequentPattern(currentCondition, pathCount)) ;			//成為frequentPattern
+		frequentPatterns.emplace_back(SingleFrequentPattern(currentCondition, pathCount)) ;			//成為frequentPattern
 	}
 }
 
@@ -199,13 +198,12 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 						l->itemCount += j->pathCount ;
 						break ;
 					}}}
-			for(int k=0; k<j->pathCount; ++k){
-				conditionalFListDB.push_back(j->pathRecord) ;}			//紀錄n次此path
+			conditionalFListDB.insert(conditionalFListDB.end(), j->pathCount, j->pathRecord) ;			//紀錄n次此path
 		}
 		
 		for(auto j=conditionalFList.end()-1; j!=conditionalFList.begin()-1; --j){
-			if(j->itemCount < _minSupportCount){			//從conditionalFList移除少於minSupportCount的item
-				for(auto k=conditionalFListDB.begin(); k!=conditionalFListDB.end(); ++k){
+			if(j->itemCount < minSupportCount){			//從conditionalFList移除少於minSupportCount的item
+				for(auto k=conditionalFListDB.end()-1; k!=conditionalFListDB.begin()-1; --k){
 					for(auto l=k->end()-1; l!=k->begin()-1; --l){
 						if(*l == j->itemName){			//從conditionalFListDB移除少於minSupportCount的item
 							k->erase(l) ;}}}
@@ -213,7 +211,7 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 			}}
 		
 		if(conditionalFList.size() > 0){
-			newConditionalFPtree = new FPtree(&conditionalFList, _minSupportCount, (int)(this->_condition.size()+1)) ;
+			newConditionalFPtree = new FPtree(&conditionalFList, (int)(this->_condition.size()+1)) ;
 			newConditionalFPtree->buildFPtreeByFlistDB(&conditionalFListDB) ;
 			newConditionalFPtree->_condition = this->_condition ;
 			newConditionalFPtree->_condition.push_back(i->conditionalItemName) ;

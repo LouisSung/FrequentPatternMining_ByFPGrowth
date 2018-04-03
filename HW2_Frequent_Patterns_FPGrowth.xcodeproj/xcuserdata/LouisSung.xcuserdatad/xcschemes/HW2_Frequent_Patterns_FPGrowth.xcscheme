@@ -65,8 +65,8 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "0.1 sample.in sample.out -all -fpcount"
-            isEnabled = "YES">
+            argument = "0.1 sample2.in sample.out -all -fpcount"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
