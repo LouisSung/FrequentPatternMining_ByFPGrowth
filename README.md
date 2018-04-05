@@ -1,10 +1,10 @@
 # FrequentPatternMining_ByFPGrowth
----
 
+---
 ### 106學年度(下)交大電機碩課程(NCTU-GEE9024)：資料科學(Data Science)  
 #### HW2: Data Mining (Frequent Pattern Mining Using FP-Growth)  
----
 
+---
 0. 開發平台macOS_10.13.3、Xcode_9.1, 測試平台Windows10_1709、g++_5.4.0_i686-posix-dwarf-rev0
 1. 編譯指令: g++ -std=c++11 main.cpp handleTypesAndParameters.cpp handleDataBase.cpp handleFPtree.cpp handleFrequentPatterns.cpp -o run.exe
 2. 參數: (double)minSupport (string)inputFileName (string)outputFileName
@@ -16,7 +16,7 @@
 
 參數列表(比較重要的就all跟fpcount):  
 all / -all :(開啟/關閉)所有除了fpcount以外的輸出  
-fpcount / -fpcounT :(開啟/關閉)輸出遞迴過程中的fp總數(避免傻傻等XD)  
+fpcount / -fpcount :(開啟/關閉)輸出遞迴過程中的fp總數(避免傻傻等XD)  
 database / -database  
 minsupport / -minsupport  
 flist / -flist  
@@ -24,9 +24,17 @@ fptree /-fptree
 cpb / -cpb  
 fp / -fp  
 (只是無聊加的功能 不知道有沒有bug 不要玩壞他拜託 ヽ(；▽；)ノ)  
-使用範例:  
-$ run.exe 0.1 input.txt output.txt all fpcount  
-$ run.exe 0.15 input.in output.out -all -fpcount  
+
+```
+執行範例:  
+$ run.exe
+$ run.exe 0.1 input.txt output.txt all fpcount  
+$ run.exe 0.15 input.in output.out -all -fpcount  
+```
+
+---
+#### 可使用./HW2_Frequent_Patterns_FPGrowth/dataGenerator 內的工具來產生測資(需用到Java、Jupyter)  
+#### 詳情請自行閱讀該資料夾內的readme
 
 ---
 Input Format:
