@@ -19,8 +19,8 @@ using std::string ;
 using std::round ;
 
 int main(int argc, const char * argv[]){
-	double minSupportRatio = 0.01f ;
-	string readFileName = "sample2.in" ;
+	double minSupportRatio = 0.1f ;
+	string readFileName = "sample.in" ;
 	string writeFileName = "sample.out" ;
 	printOrNot.setPrintOrNot(false) ;			//關閉除了fpCount以外的輸出
 	//printOrNot.setPrintOrNot(false, false) ;			//關閉所有輸出
