@@ -9,6 +9,8 @@
 #include <string>
 #include "handleTypesAndParameters.hpp"
 using std::string ;
+using std::shared_ptr ;
+using std::weak_ptr ;
 
 PrintOrNot printOrNot(true) ;			//預設輸出所有內容
 int minSupportCount = 0 ;
@@ -21,16 +23,16 @@ Item::Item(int itemName, int itemCount){
 }
 
 //==========
-TreeNode::TreeNode(int itemName, TreeNode *parrent):
+TreeNode::TreeNode(int itemName, shared_ptr<TreeNode> parrent):
 itemName(itemName),
 itemCount(1),			//出現一次
 childrenCount(0),
 parrent(parrent),
-nextSameItem((TreeNode*) NULL){
+nextSameItem(){
 }
 
 //==========
-SingleItemHeader::SingleItemHeader(Item item, TreeNode header):
+SingleItemHeader::SingleItemHeader(Item item, shared_ptr<TreeNode> header):
 item(item),
 header(header){
 }

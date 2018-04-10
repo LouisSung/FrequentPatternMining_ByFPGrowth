@@ -10,27 +10,26 @@
 #define handleFPtree_hpp
 
 #include "handleTypesAndParameters.hpp"
-
+using std::shared_ptr ;
 class FPtree{
 public:
 	FPtree(FList *fList, int conditionCount) ;
 	void buildFPtreeByFlistDB(Database *fListDB) ;
 	void mineFPtree() ;
 	void printFPtree() ;
-	TreeNode* getRoot() ;
 	
 private:
-	TreeNode _root ;
+	shared_ptr<TreeNode> _root ;
 	FList _fList ;
 	HeaderTable _headerTable ;
 	ConditionalPatternBases _conditionalPatternBases ;
 	vector<int> _condition ;
 	
-	void insertNodeFromListAt(Transaction *itemList, TreeNode *currentNode) ;
-	void treeTraversal(TreeNode *currentNode) ;
+	void insertNodeFromListAt(Transaction *itemList, shared_ptr<TreeNode> currentNode) ;
+	void treeTraversal(shared_ptr<TreeNode> currentNode) ;
 	
 	void createConditionalPatternBases() ;
-	vector<FPtree*> createConditionalFPtree() ;
+	vector<shared_ptr<FPtree>> createConditionalFPtree() ;
 	void getFrequentPatterns() ;
 	void printConditionalPatternBases() ;
 };

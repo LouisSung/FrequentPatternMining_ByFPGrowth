@@ -19,19 +19,19 @@ extern FrequentPatternTable frequentPatterns ;
 //==========
 FPtree::FPtree(FList *fList, int conditionCount):
 _condition(),
-_root(TreeNode(-1000, (TreeNode*)NULL)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
+_root(new TreeNode(-1000, nullptr)){			//constructor預設建立一個item=-1000(item範圍0~999), parrent=NULL的TreeNode作為root
 	_headerTable.reserve(fList->size()) ;			//headerTable大小=fList長度
 	_condition.reserve(conditionCount) ;
 	_fList = *fList ;
 	for(auto i=_fList.begin(); i!=_fList.end(); ++i){
-//		TreeNode *headNode = new TreeNode(i->itemName, (TreeNode*)NULL) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
-		_headerTable.emplace_back(SingleItemHeader(Item(i->itemName, i->itemCount), TreeNode(i->itemName, (TreeNode*)NULL))) ;
+		shared_ptr<TreeNode> headNode(new TreeNode(i->itemName, nullptr)) ;			//建立headNode, 用來指向該item在FPtree第一次出現的位置
+		_headerTable.emplace_back(SingleItemHeader(Item(i->itemName, i->itemCount), headNode)) ;
 	}
 }
 
 void FPtree::buildFPtreeByFlistDB(Database *fListDB){
 	for(auto i=fListDB->begin(); i!=fListDB->end(); ++i){			//將fListDB內的每筆交易用來建FPtree
-		this->insertNodeFromListAt(&(*i), this->getRoot()) ;}
+		this->insertNodeFromListAt(&(*i), _root) ;}
 }
 
 void FPtree::mineFPtree(){
@@ -41,7 +41,7 @@ void FPtree::mineFPtree(){
 	if(printOrNot.fpCount == true){
 		cout << "目前fp個數: "<< frequentPatterns.size() << "\n" ;}
 	
-	vector<FPtree*> allConditionalFPtree = createConditionalFPtree() ;
+	vector<shared_ptr<FPtree>> allConditionalFPtree = createConditionalFPtree() ;
 	for(auto i=allConditionalFPtree.begin(); i!=allConditionalFPtree.end(); ++i){
 		(*i)->printFPtree() ;
 		(*i)->mineFPtree() ;
@@ -59,26 +59,22 @@ void FPtree::printFPtree(){
 				cout << *i << ", ";}
 			cout << *i << "}:\n" ;
 		}
-		treeTraversal(&_root) ;
+		treeTraversal(_root) ;
 	}
 }
 
-TreeNode* FPtree::getRoot(){
-	return &_root ;
-}
-
 //===private function
-void FPtree::insertNodeFromListAt(Transaction *itemList, TreeNode *currentNode){
+void FPtree::insertNodeFromListAt(Transaction *itemList, shared_ptr<TreeNode> currentNode){
 	if(itemList->size() > 0){			//還有item
 		int currentItem = (*itemList)[0] ;
 		itemList->erase(itemList->begin()) ;			//取出第一個item編號, 並從itemList移除
 		
-		TreeNode **pointerToPreviousNode = (TreeNode**)NULL ;			//用以紀錄從header開始走到最後node的address(即新node的前一個)
+		shared_ptr<TreeNode> *pointerToPreviousNode = nullptr ;			//用以紀錄從header開始走到最後node的address(即新node的前一個)
 		for(auto i=_headerTable.begin(); i!=_headerTable.end(); ++i){
 			if(currentItem == i->item.itemName){			//從header table找到相符的item
-				TreeNode *previousNode = &(i->header) ;
-				while(previousNode->nextSameItem != (TreeNode*)NULL){			//一直往後找到該node沒有nextSameItem為止
-					previousNode = previousNode->nextSameItem ;}
+				shared_ptr<TreeNode> previousNode = i->header ;
+				while(!previousNode->nextSameItem.expired()){			//一直往後找到該node沒有nextSameItem為止
+					previousNode = previousNode->nextSameItem.lock() ;}
 				pointerToPreviousNode = &(previousNode) ;			//取得該node的address
 				break ;			//item不會重複, 故可停止遍歷hearder table
 			}}
@@ -94,20 +90,19 @@ void FPtree::insertNodeFromListAt(Transaction *itemList, TreeNode *currentNode){
 				}}}
 		
 		if(noDuplicatePath){			//沒有重複路徑: 沒有child(不會有重複問題)或child沒有重複的item
-			TreeNode *newChild = new TreeNode(currentItem, currentNode) ;			//建立新節點
-			currentNode->children.push_back(newChild) ;
+			currentNode->children.emplace_back(new TreeNode(currentItem, currentNode)) ;
 			++currentNode->childrenCount ;
-			(*pointerToPreviousNode)->nextSameItem = newChild ;			//將前一個node的nextSameItem設為目前node(建立新node時才做, 重複路徑的做過了)
-			insertNodeFromListAt(itemList, newChild) ;
+			(*pointerToPreviousNode)->nextSameItem = currentNode->children.back() ;			//將前一個node的nextSameItem設為目前node(建立新node時才做, 重複路徑的做過了)
+			insertNodeFromListAt(itemList, currentNode->children.back()) ;
 		}
 	}
 }
 
-void FPtree::treeTraversal(TreeNode *currentNode){
+void FPtree::treeTraversal(shared_ptr<TreeNode> currentNode){
 	static vector<Item> pathFromRootToLeaf ;			//static, 遞迴過程中保留值
 	
 	pathFromRootToLeaf.emplace_back(Item(currentNode->itemName, currentNode->itemCount)) ;			//目前item放入vector
-	if(currentNode->nextSameItem == (TreeNode*)NULL){			//沒有nextSameItem的話輸出負數以做辨認
+	if(!(currentNode->nextSameItem.expired())){			//沒有nextSameItem的話輸出負數以做辨認
 		(pathFromRootToLeaf.end()-1)->itemName *= -1 ;}
 	
 	if(currentNode->childrenCount > 0){			//有child
@@ -129,7 +124,7 @@ void FPtree::treeTraversal(TreeNode *currentNode){
 }
 
 void FPtree::createConditionalPatternBases(){
-	TreeNode *sameItem, *currentItem ;
+	weak_ptr<TreeNode> sameItem, currentItem ;
 	SinglePath singlePath ;
 	AllConditionalPath allPaths ;
 	
@@ -138,15 +133,17 @@ void FPtree::createConditionalPatternBases(){
 	_conditionalPatternBases.reserve(_headerTable.size()) ;			//預留vector大小, cPatternBases數量和headerTable一樣
 	
 	for(auto i=_headerTable.end()-1; i!=_headerTable.begin()-1; --i){			//遍歷所有header table的item
-		sameItem = i->header.nextSameItem ;			//利用headerTable找到該編號在FPtree中第一次出現的位置
+		sameItem = i->header->nextSameItem ;			//利用headerTable找到該編號在FPtree中第一次出現的位置
 		
-		while(sameItem != (TreeNode*)NULL){			//遍歷FPtree中與該item同編號的所有節點
-			currentItem = sameItem->parrent ;			//不紀錄葉節點, 從其parrent開始
-			singlePath.pathCount = sameItem->itemCount ;			//紀錄葉節點的次數, 作為此path的出現次數
+		while(!sameItem.expired()){			//遍歷FPtree中與該item同編號的所有節點
+			auto tmpSameItem = sameItem.lock() ;
+			currentItem = tmpSameItem->parrent ;			//不紀錄葉節點, 從其parrent開始
+			singlePath.pathCount = tmpSameItem->itemCount ;			//紀錄葉節點的次數, 作為此path的出現次數
 			
-			while (currentItem != (TreeNode*)NULL) {			//遍歷該節點的所有parrent
-				singlePath.pathRecord.push_back(currentItem->itemName) ;			//紀錄path
-				currentItem = currentItem->parrent ;			//指向parrent
+			while (!currentItem.expired()) {			//遍歷該節點的所有parrent
+				auto tmpCurrentItem = currentItem.lock() ;
+				singlePath.pathRecord.push_back(tmpCurrentItem->itemName) ;			//紀錄path
+				currentItem = tmpCurrentItem->parrent ;			//指向parrent
 			}
 			
 			if(singlePath.pathRecord.size() > 0){
@@ -155,7 +152,7 @@ void FPtree::createConditionalPatternBases(){
 				allPaths.push_back(singlePath) ;			//紀錄此item所有的path與出現次數
 				singlePath.pathRecord.clear() ;			//清除以記錄下一條path
 			}
-			sameItem = sameItem->nextSameItem ;			//指向下一個同編號的節點
+			sameItem = tmpSameItem->nextSameItem ;			//指向下一個同編號的節點
 		}
 		
 		if(allPaths.size() > 0){
@@ -177,9 +174,9 @@ void FPtree::getFrequentPatterns(){
 	}
 }
 
-vector<FPtree*> FPtree::createConditionalFPtree(){
-	FPtree *newConditionalFPtree ;
-	vector<FPtree*> allConditionalFPtrees;
+vector<shared_ptr<FPtree>> FPtree::createConditionalFPtree(){
+	shared_ptr<FPtree> newConditionalFPtree ;
+	vector<shared_ptr<FPtree>> allConditionalFPtrees;
 	FList conditionalFList ;
 	Database conditionalFListDB ;
 	
@@ -211,7 +208,7 @@ vector<FPtree*> FPtree::createConditionalFPtree(){
 			}}
 		
 		if(conditionalFList.size() > 0){
-			newConditionalFPtree = new FPtree(&conditionalFList, (int)(this->_condition.size()+1)) ;
+			newConditionalFPtree = shared_ptr<FPtree>(new FPtree(&conditionalFList, (int)(this->_condition.size()+1))) ;
 			newConditionalFPtree->buildFPtreeByFlistDB(&conditionalFListDB) ;
 			newConditionalFPtree->_condition = this->_condition ;
 			newConditionalFPtree->_condition.push_back(i->conditionalItemName) ;

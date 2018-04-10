@@ -11,6 +11,8 @@
 
 #include <vector>
 using std::vector ;
+using std::shared_ptr ;
+using std::weak_ptr ;
 
 extern int minSupportCount, transactionCount ;
 
@@ -39,18 +41,18 @@ struct Item{
 struct TreeNode{
 	int itemName ;
 	int itemCount, childrenCount ;
-	TreeNode *parrent ;
-	TreeNode *nextSameItem ;
-	vector<TreeNode*> children;
+	weak_ptr<TreeNode> parrent ;
+	weak_ptr<TreeNode> nextSameItem ;
+	vector<shared_ptr<TreeNode>> children;
 	
-	TreeNode(int itemName, TreeNode *parrent) ;
+	TreeNode(int itemName,shared_ptr<TreeNode> parrent) ;
 };
 
 struct SingleItemHeader{
 	Item item ;
-	TreeNode header ;
+	shared_ptr<TreeNode> header ;
 	
-	SingleItemHeader(Item item, TreeNode header) ;
+	SingleItemHeader(Item item, shared_ptr<TreeNode> header) ;
 };
 
 struct SinglePath{
