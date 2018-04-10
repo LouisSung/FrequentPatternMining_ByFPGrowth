@@ -37,6 +37,10 @@ $ run.exe 0.15 input.in output.out -all -fpcount  
 #### 詳情請自行閱讀該資料夾內的readme
 
 ---
+#### 最新版本加入Smart Pointer可以大幅減少記憶體使用量  
+#### Windows版請自行重新編譯 ( ´ ▽ ` )ﾉ，舊版仍可以使用 只是會memory leak而已QwQ
+
+---
 Input Format:
 
 每一行為一筆交易(transaction), 交易中的item以逗號隔開(無空格), item順序由小到大排(0~999), 單行最多100個item(不重複), 最多500000行
